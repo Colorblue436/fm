@@ -2,7 +2,12 @@ import type { Config } from "tailwindcss";
 
 export default {
   darkMode: ["class"],
-  content: ["./pages/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}", "./app/**/*.{ts,tsx}", "./src/**/*.{ts,tsx}"],
+  content: [
+    "./pages/**/*.{ts,tsx}",
+    "./components/**/*.{ts,tsx}",
+    "./app/**/*.{ts,tsx}",
+    "./src/**/*.{ts,tsx}",
+  ],
   prefix: "",
   theme: {
     container: {
@@ -57,6 +62,19 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        familiar: {
+          50: "hsl(var(--familiar-50))",
+          100: "hsl(var(--familiar-100))",
+          200: "hsl(var(--familiar-200))",
+          300: "hsl(var(--familiar-300))",
+          400: "hsl(var(--familiar-400))",
+          500: "hsl(var(--familiar-500))",
+          600: "hsl(var(--familiar-600))",
+          700: "hsl(var(--familiar-700))",
+          800: "hsl(var(--familiar-800))",
+          900: "hsl(var(--familiar-900))",
+          DEFAULT: "hsl(var(--familiar))",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -65,20 +83,12 @@ export default {
       },
       keyframes: {
         "accordion-down": {
-          from: {
-            height: "0",
-          },
-          to: {
-            height: "var(--radix-accordion-content-height)",
-          },
+          from: { height: "0" },
+          to: { height: "var(--radix-accordion-content-height)" },
         },
         "accordion-up": {
-          from: {
-            height: "var(--radix-accordion-content-height)",
-          },
-          to: {
-            height: "0",
-          },
+          from: { height: "var(--radix-accordion-content-height)" },
+          to: { height: "0" },
         },
       },
       animation: {
