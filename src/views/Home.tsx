@@ -1,58 +1,67 @@
-import React from 'react';
-import { Dog, Calendar, MapPin, MessageCircle, Users, Play, Grid, Shield, Heart, Sparkles } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Dog, Calendar, Plus, Clock, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { FamiliarLogo } from '@/components/ui/FamiliarLogo';
 import { AppView } from '@/types';
+import { supabase } from '@/integrations/supabase/client';
+import { format, isPast, isToday, isTomorrow } from 'date-fns';
 
 interface HomeProps {
   onNavigate: (view: AppView) => void;
 }
 
+interface Pet {
+  id: string;
+  name: string;
+  type: string;
+  breed?: string;
+  age: number;
+  avatar_url?: string;
+}
+
+interface Reminder {
+  id: string;
+  title: string;
+  date: string;
+  is_completed: boolean;
+  pet_id: string | null;
+}
+
 export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
-  const features = [
-    {
-      icon: Dog,
-      title: 'Pet Profiles',
-      description: 'Manage all your pets in one place with health records, vaccinations, and notes.',
-      action: () => onNavigate(AppView.PETS),
-      color: 'bg-blue-500',
-    },
-    {
-      icon: Calendar,
-      title: 'Tasks & Reminders',
-      description: 'Never miss a vet appointment, medication, or grooming session again.',
-      action: () => onNavigate(AppView.REMINDERS),
-      color: 'bg-green-500',
-    },
-    {
-      icon: MapPin,
-      title: 'Nearby Services',
-      description: 'Find pet stores, veterinary clinics, and groomers near you with directions.',
-      action: () => onNavigate(AppView.NEARBY),
-      color: 'bg-amber-500',
-    },
-    {
-      icon: MessageCircle,
-      title: 'AI Pet Assistant',
-      description: 'Get instant answers to pet care questions from our intelligent chatbot.',
-      action: () => onNavigate(AppView.ASSISTANT),
-      color: 'bg-purple-500',
-    },
-    {
-      icon: Users,
-      title: 'Community',
-      description: 'Connect with other pet lovers, share tips, and get advice.',
-      action: () => onNavigate(AppView.COMMUNITY),
-      color: 'bg-pink-500',
-    },
-    {
-      icon: Play,
-      title: 'Drops',
-      description: 'Discover trending pet content, videos, and stories from creators.',
-      action: () => onNavigate(AppView.DROPS),
-      color: 'bg-red-500',
-    },
-  ];
+  const [pets, setPets] = useState<Pet[]>([]);
+  const [reminders, setReminders] = useState<Reminder[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      const [petsRes, remindersRes] = await Promise.all([
+        supabase.from('pets').select('*').order('created_at', { ascending: false }),
+        supabase.from('reminders').select('*').eq('is_completed', false).order('date', { ascending: true }).limit(5),
+      ]);
+
+      if (petsRes.data) setPets(petsRes.data);
+      if (remindersRes.data) setReminders(remindersRes.data);
+      setLoading(false);
+    };
+
+    fetchData();
+  }, []);
+
+  const getDateLabel = (dateStr: string) => {
+    const date = new Date(dateStr);
+    if (isPast(date) && !isToday(date)) return 'Overdue';
+    if (isToday(date)) return 'Today';
+    if (isTomorrow(date)) return 'Tomorrow';
+    return format(date, 'MMM d');
+  };
+
+  const getDateColor = (dateStr: string) => {
+    const date = new Date(dateStr);
+    if (isPast(date) && !isToday(date)) return 'text-red-500 bg-red-50';
+    if (isToday(date)) return 'text-amber-600 bg-amber-50';
+    return 'text-muted-foreground bg-muted';
+  };
 
   return (
     <div className="space-y-8 pb-8">
@@ -63,89 +72,140 @@ export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
         
         <div className="relative z-10">
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
+            <div className="w-12 h-12 bg-background/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
               <FamiliarLogo className="w-8 h-8" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold">Welcome to Familiar</h1>
+              <h1 className="text-2xl font-bold text-white">Welcome to Familiar</h1>
               <p className="text-familiar-100 text-sm">Your pet's best companion</p>
             </div>
           </div>
           
-          <p className="text-familiar-50 mb-6 max-w-lg">
-            Familiar is your all-in-one pet care companion. Manage your pets, track their health, 
-            find nearby services, and connect with a community of pet lovers.
+          <p className="text-white/80 mb-6 max-w-lg">
+            {pets.length > 0 
+              ? `You have ${pets.length} pet${pets.length > 1 ? 's' : ''} and ${reminders.length} upcoming task${reminders.length !== 1 ? 's' : ''}.`
+              : 'Get started by adding your first pet!'}
           </p>
           
           <div className="flex flex-wrap gap-3">
             <Button 
               onClick={() => onNavigate(AppView.PETS)}
-              className="bg-white text-familiar-600 hover:bg-familiar-50"
+              className="bg-background text-familiar-600 hover:bg-background/90"
             >
-              <Dog size={18} className="mr-2" />
-              Add Your Pet
-            </Button>
-            <Button 
-              onClick={() => onNavigate(AppView.ASSISTANT)}
-              variant="outline"
-              className="border-white/30 text-white hover:bg-white/10"
-            >
-              <MessageCircle size={18} className="mr-2" />
-              Ask AI Assistant
+              <Plus size={18} className="mr-2" />
+              {pets.length > 0 ? 'Manage Pets' : 'Add Your Pet'}
             </Button>
           </div>
         </div>
       </div>
 
-      {/* Features Grid */}
+      {/* My Pets Section */}
       <div>
-        <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-          <Sparkles size={20} className="text-familiar-500" />
-          Features
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {features.map((feature) => (
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-xl font-bold text-foreground flex items-center gap-2">
+            <Dog size={22} className="text-familiar-500" />
+            My Pets
+          </h2>
+          {pets.length > 0 && (
             <button
-              key={feature.title}
-              onClick={feature.action}
-              className="bg-white rounded-2xl p-5 border border-gray-100 hover:border-familiar-200 hover:shadow-lg transition-all text-left group"
+              onClick={() => onNavigate(AppView.PETS)}
+              className="text-sm text-familiar-500 hover:text-familiar-600 flex items-center gap-1"
             >
-              <div className={`w-12 h-12 ${feature.color} rounded-xl flex items-center justify-center text-white mb-4 group-hover:scale-110 transition-transform`}>
-                <feature.icon size={24} />
-              </div>
-              <h3 className="font-bold text-gray-900 mb-1">{feature.title}</h3>
-              <p className="text-sm text-gray-500">{feature.description}</p>
+              View all <ChevronRight size={16} />
             </button>
-          ))}
+          )}
         </div>
+
+        {loading ? (
+          <div className="flex justify-center py-8">
+            <div className="animate-spin w-6 h-6 border-2 border-familiar-500 border-t-transparent rounded-full" />
+          </div>
+        ) : pets.length === 0 ? (
+          <div className="bg-card rounded-2xl p-8 text-center border border-border">
+            <Dog size={48} className="mx-auto text-muted-foreground/40 mb-3" />
+            <p className="text-muted-foreground mb-4">No pets added yet</p>
+            <Button onClick={() => onNavigate(AppView.PETS)} className="bg-familiar-500 hover:bg-familiar-600">
+              <Plus size={18} className="mr-2" /> Add Your First Pet
+            </Button>
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            {pets.slice(0, 6).map((pet) => (
+              <button
+                key={pet.id}
+                onClick={() => onNavigate(AppView.PETS)}
+                className="bg-card rounded-2xl p-4 border border-border hover:border-familiar-300 hover:shadow-md transition-all text-left group"
+              >
+                <div className="relative w-full aspect-square mb-3 overflow-hidden rounded-xl">
+                  <img
+                    src={pet.avatar_url || `https://picsum.photos/seed/${pet.id}/200`}
+                    alt={pet.name}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                    onError={(e) => (e.currentTarget.src = 'https://picsum.photos/200')}
+                  />
+                </div>
+                <h3 className="font-bold text-foreground truncate">{pet.name}</h3>
+                <p className="text-sm text-muted-foreground">{pet.type} • {pet.age}y</p>
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
-      {/* Quick Stats */}
-      <div className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-2xl p-6 border border-gray-100">
-        <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
-          <Heart size={18} className="text-red-500" />
-          Why Pet Owners Love Familiar
-        </h3>
-        <div className="grid grid-cols-3 gap-4 text-center">
-          <div>
-            <div className="text-2xl font-bold text-familiar-600">100%</div>
-            <div className="text-xs text-gray-500">Free to Use</div>
-          </div>
-          <div>
-            <div className="text-2xl font-bold text-familiar-600">24/7</div>
-            <div className="text-xs text-gray-500">AI Support</div>
-          </div>
-          <div>
-            <div className="text-2xl font-bold text-familiar-600">
-              <Shield size={24} className="mx-auto" />
-            </div>
-            <div className="text-xs text-gray-500">Secure Data</div>
-          </div>
+      {/* Upcoming Reminders Section */}
+      <div>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-xl font-bold text-foreground flex items-center gap-2">
+            <Calendar size={22} className="text-familiar-500" />
+            Upcoming Tasks
+          </h2>
+          <button
+            onClick={() => onNavigate(AppView.REMINDERS)}
+            className="text-sm text-familiar-500 hover:text-familiar-600 flex items-center gap-1"
+          >
+            View all <ChevronRight size={16} />
+          </button>
         </div>
+
+        {loading ? (
+          <div className="flex justify-center py-8">
+            <div className="animate-spin w-6 h-6 border-2 border-familiar-500 border-t-transparent rounded-full" />
+          </div>
+        ) : reminders.length === 0 ? (
+          <div className="bg-card rounded-2xl p-8 text-center border border-border">
+            <Calendar size={48} className="mx-auto text-muted-foreground/40 mb-3" />
+            <p className="text-muted-foreground mb-4">No upcoming tasks</p>
+            <Button onClick={() => onNavigate(AppView.REMINDERS)} className="bg-familiar-500 hover:bg-familiar-600">
+              <Plus size={18} className="mr-2" /> Add a Task
+            </Button>
+          </div>
+        ) : (
+          <div className="bg-card rounded-2xl border border-border overflow-hidden">
+            {reminders.map((reminder, idx) => (
+              <div
+                key={reminder.id}
+                className={`flex items-center gap-4 p-4 ${idx !== reminders.length - 1 ? 'border-b border-border' : ''}`}
+              >
+                <div className="w-10 h-10 rounded-full bg-familiar-100 flex items-center justify-center flex-shrink-0">
+                  <Clock size={18} className="text-familiar-600" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="font-medium text-foreground truncate">{reminder.title}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {format(new Date(reminder.date), 'MMM d, h:mm a')}
+                  </p>
+                </div>
+                <span className={`text-xs font-medium px-2 py-1 rounded-full ${getDateColor(reminder.date)}`}>
+                  {getDateLabel(reminder.date)}
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Daily Theme Info */}
-      <div className="text-center text-sm text-gray-400">
+      <div className="text-center text-sm text-muted-foreground">
         <p>✨ Theme colors change daily to keep things fresh!</p>
       </div>
     </div>

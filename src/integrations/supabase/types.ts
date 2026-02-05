@@ -38,6 +38,47 @@ export type Database = {
         }
         Relationships: []
       }
+      pet_memories: {
+        Row: {
+          caption: string | null
+          content: string | null
+          created_at: string
+          id: string
+          media_url: string | null
+          memory_type: string
+          pet_id: string
+          user_id: string
+        }
+        Insert: {
+          caption?: string | null
+          content?: string | null
+          created_at?: string
+          id?: string
+          media_url?: string | null
+          memory_type: string
+          pet_id: string
+          user_id: string
+        }
+        Update: {
+          caption?: string | null
+          content?: string | null
+          created_at?: string
+          id?: string
+          media_url?: string | null
+          memory_type?: string
+          pet_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pet_memories_pet_id_fkey"
+            columns: ["pet_id"]
+            isOneToOne: false
+            referencedRelation: "pets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       pets: {
         Row: {
           age: number | null
