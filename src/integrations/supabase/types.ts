@@ -38,6 +38,146 @@ export type Database = {
         }
         Relationships: []
       }
+      community_posts: {
+        Row: {
+          content: string | null
+          created_at: string
+          id: string
+          likes_count: number | null
+          media_type: string | null
+          media_url: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          content?: string | null
+          created_at?: string
+          id?: string
+          likes_count?: number | null
+          media_type?: string | null
+          media_url?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          content?: string | null
+          created_at?: string
+          id?: string
+          likes_count?: number | null
+          media_type?: string | null
+          media_url?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      drops: {
+        Row: {
+          created_at: string
+          description: string | null
+          duration: number | null
+          id: string
+          likes_count: number | null
+          media_type: string | null
+          media_url: string
+          thumbnail_url: string | null
+          title: string | null
+          user_id: string
+          views_count: number | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          duration?: number | null
+          id?: string
+          likes_count?: number | null
+          media_type?: string | null
+          media_url: string
+          thumbnail_url?: string | null
+          title?: string | null
+          user_id: string
+          views_count?: number | null
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          duration?: number | null
+          id?: string
+          likes_count?: number | null
+          media_type?: string | null
+          media_url?: string
+          thumbnail_url?: string | null
+          title?: string | null
+          user_id?: string
+          views_count?: number | null
+        }
+        Relationships: []
+      }
+      group_members: {
+        Row: {
+          group_id: string
+          id: string
+          joined_at: string
+          role: string | null
+          user_id: string
+        }
+        Insert: {
+          group_id: string
+          id?: string
+          joined_at?: string
+          role?: string | null
+          user_id: string
+        }
+        Update: {
+          group_id?: string
+          id?: string
+          joined_at?: string
+          role?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "group_members_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      groups: {
+        Row: {
+          cover_image_url: string | null
+          created_at: string
+          description: string | null
+          id: string
+          is_public: boolean | null
+          member_count: number | null
+          name: string
+          owner_id: string
+        }
+        Insert: {
+          cover_image_url?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_public?: boolean | null
+          member_count?: number | null
+          name: string
+          owner_id: string
+        }
+        Update: {
+          cover_image_url?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_public?: boolean | null
+          member_count?: number | null
+          name?: string
+          owner_id?: string
+        }
+        Relationships: []
+      }
       pet_memories: {
         Row: {
           caption: string | null
@@ -133,6 +273,7 @@ export type Database = {
           id: string
           updated_at: string | null
           user_id: string
+          user_mode: string | null
         }
         Insert: {
           avatar_url?: string | null
@@ -142,6 +283,7 @@ export type Database = {
           id?: string
           updated_at?: string | null
           user_id: string
+          user_mode?: string | null
         }
         Update: {
           avatar_url?: string | null
@@ -151,6 +293,7 @@ export type Database = {
           id?: string
           updated_at?: string | null
           user_id?: string
+          user_mode?: string | null
         }
         Relationships: []
       }
