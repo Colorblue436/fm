@@ -28,13 +28,13 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onFinish }) => {
         <div className="absolute -bottom-24 -left-24 w-72 h-72 bg-familiar-600 rounded-full opacity-50 blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
       </div>
 
-      <div className={`relative flex flex-col items-center transition-all duration-1000 transform ${isExiting ? 'scale-110' : 'scale-100'}`}>
-        <div className="relative">
-          <div className="absolute inset-0 bg-white rounded-3xl animate-ping opacity-20" />
-          <div className="w-32 h-32 bg-white rounded-3xl shadow-2xl flex items-center justify-center animate-bounce">
-            <FamiliarLogo className="w-20 h-20 text-familiar-500" />
+        <div className={`relative flex flex-col items-center transition-all duration-1000 transform ${isExiting ? 'scale-110' : 'scale-100'}`}>
+          <div className="relative">
+            <div className="absolute inset-0 bg-white rounded-3xl opacity-20" />
+            <div className="w-32 h-32 bg-white rounded-3xl shadow-2xl flex items-center justify-center">
+              <FamiliarLogo className="w-20 h-20 text-familiar-500" />
+            </div>
           </div>
-        </div>
 
         <div className="mt-8 text-center">
           <h1 className="text-4xl font-bold text-white tracking-tight">Familiar</h1>

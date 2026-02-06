@@ -23,6 +23,7 @@ const Community = React.lazy(() => import('@/views/Community').then(m => ({ defa
 const Drops = React.lazy(() => import('@/views/Drops').then(m => ({ default: m.Drops })));
 const Groups = React.lazy(() => import('@/views/Groups').then(m => ({ default: m.Groups })));
 const Profile = React.lazy(() => import('@/views/Profile').then(m => ({ default: m.Profile })));
+const Onboarding = React.lazy(() => import('@/components/Onboarding').then(m => ({ default: m.Onboarding })));
 
 const queryClient = new QueryClient();
 
@@ -32,6 +33,8 @@ const AppContent: React.FC = () => {
   const [isYouMode, setIsYouMode] = useState(false);
   const [user, setUser] = useState<any>(null);
   const [isLoadingUser, setIsLoadingUser] = useState(true);
+  const [userMode, setUserMode] = useState<'visitor' | 'pet_owner' | null>(null);
+  const [showOnboarding, setShowOnboarding] = useState(false);
 
   // Apply daily theme on mount
   useEffect(() => {
@@ -42,22 +45,65 @@ const AppContent: React.FC = () => {
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       setUser(session?.user ?? null);
+      if (session?.user) {
+        // Check if user has completed onboarding - defer to avoid deadlock
+        setTimeout(() => {
+          checkUserMode(session.user.id);
+        }, 0);
+      } else {
+        setUserMode(null);
+        setShowOnboarding(false);
+      }
       setIsLoadingUser(false);
     });
 
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
-      setIsLoadingUser(false);
+      if (session?.user) {
+        checkUserMode(session.user.id);
+      } else {
+        setIsLoadingUser(false);
+      }
     });
 
     return () => subscription.unsubscribe();
   }, []);
+
+  const checkUserMode = async (userId: string) => {
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('user_mode')
+      .eq('user_id', userId)
+      .single();
+
+    if (profile?.user_mode) {
+      setUserMode(profile.user_mode as 'visitor' | 'pet_owner');
+      setShowOnboarding(false);
+    } else {
+      setShowOnboarding(true);
+    }
+    setIsLoadingUser(false);
+  };
+
+  const handleOnboardingComplete = (mode: 'visitor' | 'pet_owner') => {
+    setUserMode(mode);
+    setShowOnboarding(false);
+    // Set appropriate starting view based on mode
+    if (mode === 'visitor') {
+      setCurrentView(AppView.COMMUNITY);
+      setIsYouMode(true);
+    } else {
+      setCurrentView(AppView.HOME);
+      setIsYouMode(false);
+    }
+  };
 
   const handleSplashFinish = () => setShowSplash(false);
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
     setUser(null);
+    setUserMode(null);
     setCurrentView(AppView.HOME);
     setIsYouMode(false);
   };
@@ -73,12 +119,38 @@ const AppContent: React.FC = () => {
   if (!user) {
     return (
       <Suspense fallback={<Loading />}>
-        <Auth onSuccess={() => setCurrentView(AppView.HOME)} />
+        <Auth onSuccess={() => {}} />
+      </Suspense>
+    );
+  }
+
+  // Show onboarding for new users
+  if (showOnboarding) {
+    return (
+      <Suspense fallback={<Loading />}>
+        <Onboarding userId={user.id} onComplete={handleOnboardingComplete} />
       </Suspense>
     );
   }
 
   const renderView = () => {
+    // Visitors shouldn't access pet care features
+    if (userMode === 'visitor') {
+      switch (currentView) {
+        case AppView.COMMUNITY:
+          return <Community />;
+        case AppView.DROPS:
+          return <Drops />;
+        case AppView.GROUPS:
+          return <Groups />;
+        case AppView.PROFILE:
+          return <Profile />;
+        default:
+          return <Community />;
+      }
+    }
+
+    // Pet owners have full access
     switch (currentView) {
       case AppView.HOME:
         return <Home onNavigate={setCurrentView} />;
@@ -110,6 +182,7 @@ const AppContent: React.FC = () => {
       onLogout={handleLogout}
       isYouMode={isYouMode}
       onToggleYouMode={toggleYouMode}
+      userMode={userMode}
     >
       <Suspense fallback={<Loading />}>{renderView()}</Suspense>
     </Layout>
