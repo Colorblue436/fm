@@ -9,7 +9,6 @@ interface NavigationProps {
   onLogout: () => void;
   isYouMode: boolean;
   onToggleYouMode: () => void;
-  userMode?: 'visitor' | 'pet_owner' | null;
 }
 
 export const Navigation: React.FC<NavigationProps> = ({ 
@@ -17,15 +16,12 @@ export const Navigation: React.FC<NavigationProps> = ({
   onChangeView, 
   onLogout,
   isYouMode,
-  onToggleYouMode,
-  userMode
+  onToggleYouMode
 }) => {
   const [lastTap, setLastTap] = useState(0);
 
-  // Visitors can't toggle to pet mode
   const handleLogoTap = (e: React.MouseEvent) => {
     e.preventDefault();
-    if (userMode === 'visitor') return; // Visitors stay in community mode
     const now = Date.now();
     if (now - lastTap < 300) onToggleYouMode();
     setLastTap(now);
@@ -46,20 +42,16 @@ export const Navigation: React.FC<NavigationProps> = ({
     { view: AppView.PROFILE, icon: User, label: 'Profile' },
   ];
 
-  // Visitors only see community navigation
-  const navItems = userMode === 'visitor' ? youNavItems : (isYouMode ? youNavItems : standardNavItems);
+  const navItems = isYouMode ? youNavItems : standardNavItems;
   
-  // For visitors, always show as "You" mode visually
-  const effectiveYouMode = userMode === 'visitor' ? true : isYouMode;
+  const sidebarBg = isYouMode ? 'bg-zinc-800 border-zinc-700' : 'bg-white border-gray-100';
+  const bottomBarBg = isYouMode ? 'bg-zinc-800 border-zinc-700' : 'bg-white border-gray-100';
+  const logoTextColor = isYouMode ? 'text-white' : 'text-familiar-900';
   
-  const sidebarBg = effectiveYouMode ? 'bg-zinc-800 border-zinc-700' : 'bg-white border-gray-100';
-  const bottomBarBg = effectiveYouMode ? 'bg-zinc-800 border-zinc-700' : 'bg-white border-gray-100';
-  const logoTextColor = effectiveYouMode ? 'text-white' : 'text-familiar-900';
-  
-  const activeItemStyle = effectiveYouMode 
+  const activeItemStyle = isYouMode 
     ? 'text-white bg-familiar-600 shadow-md' 
     : 'text-familiar-600 bg-familiar-50 md:bg-familiar-100';
-  const inactiveItemStyle = effectiveYouMode 
+  const inactiveItemStyle = isYouMode 
     ? 'text-zinc-400 hover:bg-zinc-700 hover:text-white' 
     : 'text-gray-500 hover:bg-gray-50 hover:text-gray-700';
 
@@ -69,9 +61,9 @@ export const Navigation: React.FC<NavigationProps> = ({
       <button
         key={item.view}
         onClick={() => onChangeView(item.view)}
-        className={`flex flex-col items-center justify-center py-2 rounded-xl transition-all ${isActive ? 'scale-105' : ''} ${isActive ? (effectiveYouMode ? 'text-white' : 'text-familiar-500') : (effectiveYouMode ? 'text-zinc-500' : 'text-gray-400')}`}
+        className={`flex flex-col items-center justify-center py-2 rounded-xl transition-all ${isActive ? 'scale-105' : ''} ${isActive ? (isYouMode ? 'text-white' : 'text-familiar-500') : (isYouMode ? 'text-zinc-500' : 'text-gray-400')}`}
       >
-        <div className={`p-1.5 rounded-xl ${isActive ? (effectiveYouMode ? 'bg-familiar-500' : 'bg-familiar-100') : ''}`}>
+        <div className={`p-1.5 rounded-xl ${isActive ? (isYouMode ? 'bg-familiar-500' : 'bg-familiar-100') : ''}`}>
           <item.icon size={22} strokeWidth={isActive ? 2.5 : 2} />
         </div>
         <span className="text-[10px] mt-1 font-medium">{item.label}</span>
@@ -84,15 +76,15 @@ export const Navigation: React.FC<NavigationProps> = ({
       {/* Desktop Sidebar */}
       <nav className={`hidden md:flex flex-col w-64 border-r h-screen p-4 fixed left-0 top-0 z-20 transition-colors duration-500 ${sidebarBg}`}>
         <div 
-          className={`flex items-center gap-2 mb-8 px-4 select-none group ${userMode === 'visitor' ? '' : 'cursor-pointer'}`}
+          className="flex items-center gap-2 mb-8 px-4 cursor-pointer select-none group"
           onClick={handleLogoTap}
-          title={userMode === 'visitor' ? 'Community Mode' : 'Double tap to switch modes'}
+          title="Double tap to switch modes"
         >
           <div className="w-10 h-10 bg-familiar-500 rounded-xl flex items-center justify-center text-white font-bold shadow-lg shadow-familiar-500/30 group-hover:scale-105 transition-transform">
-            {effectiveYouMode ? <User size={20} /> : <FamiliarLogo className="w-6 h-6" />}
+            {isYouMode ? <User size={20} /> : <FamiliarLogo className="w-6 h-6" />}
           </div>
           <span className={`text-xl font-bold ${logoTextColor} tracking-tight`}>
-            {effectiveYouMode ? 'You' : 'Familiar'}
+            {isYouMode ? 'You' : 'Familiar'}
           </span>
         </div>
         
@@ -117,7 +109,7 @@ export const Navigation: React.FC<NavigationProps> = ({
         <div className="mt-auto px-4 pb-4">
           <button 
             onClick={onLogout}
-            className={`flex items-center text-sm w-full transition-colors ${effectiveYouMode ? 'text-zinc-500 hover:text-red-400' : 'text-gray-400 hover:text-red-500'}`}
+            className={`flex items-center text-sm w-full transition-colors ${isYouMode ? 'text-zinc-500 hover:text-red-400' : 'text-gray-400 hover:text-red-500'}`}
           >
             <LogOut size={18} className="mr-3" />
             Logout
@@ -133,11 +125,11 @@ export const Navigation: React.FC<NavigationProps> = ({
           </div>
           
           <div 
-            className={`relative -top-6 mx-2 flex-shrink-0 z-30 ${userMode === 'visitor' ? '' : 'cursor-pointer'}`}
+            className="relative -top-6 mx-2 cursor-pointer flex-shrink-0 z-30"
             onClick={handleLogoTap}
           >
-            <div className={`w-14 h-14 bg-familiar-500 rounded-full flex items-center justify-center text-white shadow-lg border-4 transition-transform active:scale-95 ${effectiveYouMode ? 'border-zinc-800' : 'border-white'}`}>
-              {effectiveYouMode ? <User size={24} /> : <FamiliarLogo className="w-8 h-8" />}
+            <div className={`w-14 h-14 bg-familiar-500 rounded-full flex items-center justify-center text-white shadow-lg border-4 transition-transform active:scale-95 ${isYouMode ? 'border-zinc-800' : 'border-white'}`}>
+              {isYouMode ? <User size={24} /> : <FamiliarLogo className="w-8 h-8" />}
             </div>
           </div>
 

@@ -38,207 +38,6 @@ export type Database = {
         }
         Relationships: []
       }
-      community_posts: {
-        Row: {
-          content: string | null
-          created_at: string
-          id: string
-          likes_count: number | null
-          media_type: string | null
-          media_url: string | null
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          content?: string | null
-          created_at?: string
-          id?: string
-          likes_count?: number | null
-          media_type?: string | null
-          media_url?: string | null
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          content?: string | null
-          created_at?: string
-          id?: string
-          likes_count?: number | null
-          media_type?: string | null
-          media_url?: string | null
-          updated_at?: string
-          user_id?: string
-        }
-        Relationships: []
-      }
-      drop_comments: {
-        Row: {
-          content: string
-          created_at: string | null
-          drop_id: string
-          id: string
-          user_id: string
-        }
-        Insert: {
-          content: string
-          created_at?: string | null
-          drop_id: string
-          id?: string
-          user_id: string
-        }
-        Update: {
-          content?: string
-          created_at?: string | null
-          drop_id?: string
-          id?: string
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "drop_comments_drop_id_fkey"
-            columns: ["drop_id"]
-            isOneToOne: false
-            referencedRelation: "drops"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      drop_likes: {
-        Row: {
-          created_at: string | null
-          drop_id: string
-          id: string
-          user_id: string
-        }
-        Insert: {
-          created_at?: string | null
-          drop_id: string
-          id?: string
-          user_id: string
-        }
-        Update: {
-          created_at?: string | null
-          drop_id?: string
-          id?: string
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "drop_likes_drop_id_fkey"
-            columns: ["drop_id"]
-            isOneToOne: false
-            referencedRelation: "drops"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      drops: {
-        Row: {
-          created_at: string
-          description: string | null
-          duration: number | null
-          id: string
-          likes_count: number | null
-          media_type: string | null
-          media_url: string
-          thumbnail_url: string | null
-          title: string | null
-          user_id: string
-          views_count: number | null
-        }
-        Insert: {
-          created_at?: string
-          description?: string | null
-          duration?: number | null
-          id?: string
-          likes_count?: number | null
-          media_type?: string | null
-          media_url: string
-          thumbnail_url?: string | null
-          title?: string | null
-          user_id: string
-          views_count?: number | null
-        }
-        Update: {
-          created_at?: string
-          description?: string | null
-          duration?: number | null
-          id?: string
-          likes_count?: number | null
-          media_type?: string | null
-          media_url?: string
-          thumbnail_url?: string | null
-          title?: string | null
-          user_id?: string
-          views_count?: number | null
-        }
-        Relationships: []
-      }
-      group_members: {
-        Row: {
-          group_id: string
-          id: string
-          joined_at: string
-          role: string | null
-          user_id: string
-        }
-        Insert: {
-          group_id: string
-          id?: string
-          joined_at?: string
-          role?: string | null
-          user_id: string
-        }
-        Update: {
-          group_id?: string
-          id?: string
-          joined_at?: string
-          role?: string | null
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "group_members_group_id_fkey"
-            columns: ["group_id"]
-            isOneToOne: false
-            referencedRelation: "groups"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      groups: {
-        Row: {
-          cover_image_url: string | null
-          created_at: string
-          description: string | null
-          id: string
-          is_public: boolean | null
-          member_count: number | null
-          name: string
-          owner_id: string
-        }
-        Insert: {
-          cover_image_url?: string | null
-          created_at?: string
-          description?: string | null
-          id?: string
-          is_public?: boolean | null
-          member_count?: number | null
-          name: string
-          owner_id: string
-        }
-        Update: {
-          cover_image_url?: string | null
-          created_at?: string
-          description?: string | null
-          id?: string
-          is_public?: boolean | null
-          member_count?: number | null
-          name?: string
-          owner_id?: string
-        }
-        Relationships: []
-      }
       pet_memories: {
         Row: {
           caption: string | null
@@ -334,7 +133,6 @@ export type Database = {
           id: string
           updated_at: string | null
           user_id: string
-          user_mode: string | null
         }
         Insert: {
           avatar_url?: string | null
@@ -344,7 +142,6 @@ export type Database = {
           id?: string
           updated_at?: string | null
           user_id: string
-          user_mode?: string | null
         }
         Update: {
           avatar_url?: string | null
@@ -354,7 +151,6 @@ export type Database = {
           id?: string
           updated_at?: string | null
           user_id?: string
-          user_mode?: string | null
         }
         Relationships: []
       }
@@ -396,27 +192,6 @@ export type Database = {
           },
         ]
       }
-      user_roles: {
-        Row: {
-          created_at: string | null
-          id: string
-          role: Database["public"]["Enums"]["app_role"]
-          user_id: string
-        }
-        Insert: {
-          created_at?: string | null
-          id?: string
-          role: Database["public"]["Enums"]["app_role"]
-          user_id: string
-        }
-        Update: {
-          created_at?: string | null
-          id?: string
-          role?: Database["public"]["Enums"]["app_role"]
-          user_id?: string
-        }
-        Relationships: []
-      }
       vaccinations: {
         Row: {
           created_at: string | null
@@ -457,20 +232,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      get_user_role: {
-        Args: { _user_id: string }
-        Returns: Database["public"]["Enums"]["app_role"]
-      }
-      has_role: {
-        Args: {
-          _role: Database["public"]["Enums"]["app_role"]
-          _user_id: string
-        }
-        Returns: boolean
-      }
+      [_ in never]: never
     }
     Enums: {
-      app_role: "visitor" | "pet_parent"
+      [_ in never]: never
     }
     CompositeTypes: {
       [_ in never]: never
@@ -597,8 +362,6 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {
-      app_role: ["visitor", "pet_parent"],
-    },
+    Enums: {},
   },
 } as const
