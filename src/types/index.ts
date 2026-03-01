@@ -8,6 +8,7 @@ export enum AppView {
   COMMUNITY = 'community',
   DROPS = 'drops',
   GROUPS = 'groups',
+  SCRATCH_BOARD = 'scratch_board',
   PROFILE = 'profile',
   AUTH = 'auth',
 }

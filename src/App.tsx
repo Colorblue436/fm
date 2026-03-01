@@ -22,6 +22,7 @@ const NearbyPlaces = React.lazy(() => import('@/views/NearbyPlaces').then(m => (
 const Community = React.lazy(() => import('@/views/Community').then(m => ({ default: m.Community })));
 const Drops = React.lazy(() => import('@/views/Drops').then(m => ({ default: m.Drops })));
 const Groups = React.lazy(() => import('@/views/Groups').then(m => ({ default: m.Groups })));
+const ScratchBoard = React.lazy(() => import('@/views/ScratchBoard').then(m => ({ default: m.ScratchBoard })));
 const Profile = React.lazy(() => import('@/views/Profile').then(m => ({ default: m.Profile })));
 
 const queryClient = new QueryClient();
@@ -96,6 +97,8 @@ const AppContent: React.FC = () => {
         return <Drops />;
       case AppView.GROUPS:
         return <Groups />;
+      case AppView.SCRATCH_BOARD:
+        return <ScratchBoard />;
       case AppView.PROFILE:
         return <Profile />;
       default:

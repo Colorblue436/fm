@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Home, Dog, Calendar, MessageCircle, LogOut, Users, Play, Grid, User, MapPin } from 'lucide-react';
+import { Home, Dog, Calendar, MessageCircle, LogOut, Users, Play, Grid, User, MapPin, Megaphone } from 'lucide-react';
 import { AppView } from '../types';
 import { FamiliarLogo } from './ui/FamiliarLogo';
 
@@ -39,6 +39,7 @@ export const Navigation: React.FC<NavigationProps> = ({
     { view: AppView.COMMUNITY, icon: Users, label: 'Community' },
     { view: AppView.DROPS, icon: Play, label: 'Drops' },
     { view: AppView.GROUPS, icon: Grid, label: 'Groups' },
+    { view: AppView.SCRATCH_BOARD, icon: Megaphone, label: 'Board' },
     { view: AppView.PROFILE, icon: User, label: 'Profile' },
   ];
 
@@ -121,7 +122,7 @@ export const Navigation: React.FC<NavigationProps> = ({
       <nav className={`md:hidden fixed bottom-0 left-0 right-0 border-t pb-safe z-20 rounded-t-2xl shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] transition-colors duration-500 ${bottomBarBg}`}>
         <div className="flex justify-between items-end px-2 pb-2">
           <div className="flex flex-1 justify-around">
-            {navItems.slice(0, 2).map(renderMobileItem)}
+            {navItems.slice(0, Math.floor(navItems.length / 2)).map(renderMobileItem)}
           </div>
           
           <div 
@@ -134,7 +135,7 @@ export const Navigation: React.FC<NavigationProps> = ({
           </div>
 
           <div className="flex flex-1 justify-around">
-            {navItems.slice(2, 4).map(renderMobileItem)}
+            {navItems.slice(Math.floor(navItems.length / 2)).map(renderMobileItem)}
           </div>
         </div>
       </nav>
