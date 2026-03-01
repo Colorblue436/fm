@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { Edit2, Trash2, ChevronDown, Syringe, Gamepad2, StickyNote, HeartHandshake, Camera } from 'lucide-react';
-import { format } from 'date-fns';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Edit2, Trash2, ChevronDown, Gamepad2, StickyNote, HeartHandshake, Camera } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/context/ToastContext';
 import { PetMemories } from './PetMemories';
+import { VaccinationManager } from './VaccinationManager';
 
 interface Pet {
   id: string;
@@ -20,7 +20,8 @@ interface Pet {
 interface Vaccination {
   id: string;
   name: string;
-  date: string;
+  date: string | null;
+  next_due: string | null;
 }
 
 interface PetCardProps {
@@ -38,18 +39,19 @@ export const PetCard: React.FC<PetCardProps> = ({ pet, onEdit, onDelete }) => {
 
   const isDog = pet.type === 'Dog';
 
-  useEffect(() => {
-    const fetchVaccinations = async () => {
-      const { data, error } = await supabase
-        .from('vaccinations')
-        .select('*')
-        .eq('pet_id', pet.id)
-        .order('date', { ascending: false });
+  const fetchVaccinations = useCallback(async () => {
+    const { data, error } = await supabase
+      .from('vaccinations')
+      .select('*')
+      .eq('pet_id', pet.id)
+      .order('date', { ascending: false });
 
-      if (!error && data) setVaccinations(data);
-    };
-    fetchVaccinations();
+    if (!error && data) setVaccinations(data);
   }, [pet.id]);
+
+  useEffect(() => {
+    fetchVaccinations();
+  }, [fetchVaccinations]);
 
   const handleDelete = async () => {
     if (!confirm(`Are you sure you want to remove ${pet.name}?`)) return;
@@ -137,7 +139,7 @@ export const PetCard: React.FC<PetCardProps> = ({ pet, onEdit, onDelete }) => {
       </div>
 
       <div
-        style={{ maxHeight: isExpanded ? '500px' : '0px', transition: 'max-height 0.35s ease' }}
+        style={{ maxHeight: isExpanded ? '800px' : '0px', transition: 'max-height 0.35s ease' }}
         className="overflow-hidden bg-muted/30 px-4"
       >
         <div className="py-4 space-y-4">
@@ -156,25 +158,12 @@ export const PetCard: React.FC<PetCardProps> = ({ pet, onEdit, onDelete }) => {
             </div>
           )}
 
-          <div>
-            <div className="flex items-center gap-2 text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">
-              <Syringe size={14} /> Vaccinations
-            </div>
-            {vaccinations.length > 0 ? (
-              <div className="bg-card rounded-xl border border-border overflow-hidden">
-                {vaccinations.map((vac) => (
-                  <div key={vac.id} className="flex justify-between items-center p-2 text-sm border-b last:border-0 border-border">
-                    <span className="font-medium text-foreground">{vac.name}</span>
-                    <span className="text-muted-foreground text-xs">
-                      {vac.date ? format(new Date(vac.date), 'MMM d, yyyy') : 'N/A'}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <p className="text-xs text-muted-foreground italic">No records added.</p>
-            )}
-          </div>
+          <VaccinationManager
+            petId={pet.id}
+            petName={pet.name}
+            vaccinations={vaccinations}
+            onUpdate={fetchVaccinations}
+          />
 
           {pet.notes && (
             <div>
