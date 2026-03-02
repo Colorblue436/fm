@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Heart, MessageCircle, Share2, Plus, Play, X, Upload, Loader2, Send } from 'lucide-react';
+import { Heart, MessageCircle, Share2, Plus, Play, X, Upload, Loader2, Send, Trash2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/context/ToastContext';
 import { Button } from '@/components/ui/button';
@@ -55,6 +55,11 @@ export const Drops: React.FC = () => {
   // Double-tap like animation
   const [likeAnimDropId, setLikeAnimDropId] = useState<string | null>(null);
   const lastTapRef = useRef<{ [key: string]: number }>({});
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data: { user } }) => setCurrentUserId(user?.id || null));
+  }, []);
 
   const fetchDrops = async () => {
     setLoading(true);
@@ -311,6 +316,18 @@ export const Drops: React.FC = () => {
     } else {
       await navigator.clipboard.writeText(drop.media_url);
       addToast('Link copied!', 'success');
+    }
+  };
+
+  const handleDeleteComment = async (commentId: string, dropId: string) => {
+    const { error } = await supabase.from('drop_comments').delete().eq('id', commentId);
+    if (error) {
+      addToast('Failed to delete comment', 'error');
+    } else {
+      setComments(prev => prev.filter(c => c.id !== commentId));
+      setDrops(prev =>
+        prev.map(d => d.id === dropId ? { ...d, comments_count: Math.max(0, (d.comments_count || 0) - 1) } : d)
+      );
     }
   };
 
@@ -610,6 +627,15 @@ export const Drops: React.FC = () => {
                         </div>
                         <p className="text-sm text-foreground/80 mt-0.5">{c.content}</p>
                       </div>
+                      {currentUserId === c.user_id && (
+                        <button
+                          onClick={() => commentsDropId && handleDeleteComment(c.id, commentsDropId)}
+                          className="flex-shrink-0 p-1 rounded hover:bg-destructive/10 transition-colors"
+                          title="Delete comment"
+                        >
+                          <Trash2 size={14} className="text-destructive" />
+                        </button>
+                      )}
                     </div>
                   ))}
                 </div>
