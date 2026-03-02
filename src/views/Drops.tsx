@@ -103,6 +103,112 @@ export const Drops: React.FC = () => {
 
   useEffect(() => {
     fetchDrops();
+
+    // Realtime: new drops
+    const dropsChannel = supabase
+      .channel('drops-realtime')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'drops' }, async (payload) => {
+        const newDrop = payload.new as any;
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('display_name, avatar_url')
+          .eq('user_id', newDrop.user_id)
+          .single();
+        const { data: { user } } = await supabase.auth.getUser();
+        let user_liked = false;
+        if (user) {
+          const { data: like } = await supabase
+            .from('drop_likes')
+            .select('id')
+            .eq('drop_id', newDrop.id)
+            .eq('user_id', user.id)
+            .maybeSingle();
+          user_liked = !!like;
+        }
+        setDrops(prev => {
+          if (prev.some(d => d.id === newDrop.id)) return prev;
+          return [{ ...newDrop, profile, user_liked, comments_count: 0 }, ...prev];
+        });
+      })
+      .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'drops' }, (payload) => {
+        const deleted = payload.old as any;
+        setDrops(prev => prev.filter(d => d.id !== deleted.id));
+      })
+      .subscribe();
+
+    // Realtime: likes
+    const likesChannel = supabase
+      .channel('drop-likes-realtime')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'drop_likes' }, async (payload) => {
+        const like = payload.new as any;
+        const { data: { user } } = await supabase.auth.getUser();
+        setDrops(prev =>
+          prev.map(d => {
+            if (d.id !== like.drop_id) return d;
+            return {
+              ...d,
+              likes_count: (d.likes_count || 0) + 1,
+              user_liked: user?.id === like.user_id ? true : d.user_liked,
+            };
+          })
+        );
+      })
+      .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'drop_likes' }, async (payload) => {
+        const like = payload.old as any;
+        const { data: { user } } = await supabase.auth.getUser();
+        setDrops(prev =>
+          prev.map(d => {
+            if (d.id !== like.drop_id) return d;
+            return {
+              ...d,
+              likes_count: Math.max(0, (d.likes_count || 0) - 1),
+              user_liked: user?.id === like.user_id ? false : d.user_liked,
+            };
+          })
+        );
+      })
+      .subscribe();
+
+    // Realtime: comments (update count + live comments if sheet open)
+    const commentsChannel = supabase
+      .channel('drop-comments-realtime')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'drop_comments' }, async (payload) => {
+        const newComment = payload.new as any;
+        setDrops(prev =>
+          prev.map(d => d.id === newComment.drop_id ? { ...d, comments_count: (d.comments_count || 0) + 1 } : d)
+        );
+        // If comments sheet is open for this drop, add the comment
+        setCommentsDropId(currentId => {
+          if (currentId === newComment.drop_id) {
+            (async () => {
+              const { data: profile } = await supabase
+                .from('profiles')
+                .select('display_name, avatar_url')
+                .eq('user_id', newComment.user_id)
+                .single();
+              setComments(prev => {
+                if (prev.some(c => c.id === newComment.id)) return prev;
+                return [...prev, { ...newComment, profile } as Comment];
+              });
+            })();
+          }
+          return currentId;
+        });
+      })
+      .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'drop_comments' }, (payload) => {
+        const deleted = payload.old as any;
+        setDrops(prev =>
+          prev.map(d => d.id === deleted.drop_id ? { ...d, comments_count: Math.max(0, (d.comments_count || 0) - 1) } : d)
+        );
+        setComments(prev => prev.filter(c => c.id !== deleted.id));
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(dropsChannel);
+      supabase.removeChannel(likesChannel);
+      supabase.removeChannel(commentsChannel);
+    };
   }, []);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
