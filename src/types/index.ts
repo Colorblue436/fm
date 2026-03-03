@@ -10,6 +10,7 @@ export enum AppView {
   GROUPS = 'groups',
   SCRATCH_BOARD = 'scratch_board',
   PROFILE = 'profile',
+  SETTINGS = 'settings',
   AUTH = 'auth',
 }
 
