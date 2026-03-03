@@ -24,6 +24,7 @@ const Drops = React.lazy(() => import('@/views/Drops').then(m => ({ default: m.D
 const Groups = React.lazy(() => import('@/views/Groups').then(m => ({ default: m.Groups })));
 const ScratchBoard = React.lazy(() => import('@/views/ScratchBoard').then(m => ({ default: m.ScratchBoard })));
 const Profile = React.lazy(() => import('@/views/Profile').then(m => ({ default: m.Profile })));
+const Settings = React.lazy(() => import('@/views/Settings').then(m => ({ default: m.Settings })));
 
 const queryClient = new QueryClient();
 
@@ -100,7 +101,9 @@ const AppContent: React.FC = () => {
       case AppView.SCRATCH_BOARD:
         return <ScratchBoard />;
       case AppView.PROFILE:
-        return <Profile />;
+        return <Profile onNavigate={setCurrentView} />;
+      case AppView.SETTINGS:
+        return <Settings onBack={() => setCurrentView(AppView.PROFILE)} />;
       default:
         return isYouMode ? <Drops /> : <Home onNavigate={setCurrentView} />;
     }

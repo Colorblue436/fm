@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { User, Edit2, Camera, LogOut } from 'lucide-react';
+import { User, Edit2, Camera, LogOut, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/context/ToastContext';
+import { AppView } from '@/types';
 
 interface ProfileData {
   display_name: string;
@@ -11,7 +12,11 @@ interface ProfileData {
   bio: string | null;
 }
 
-export const Profile: React.FC = () => {
+interface ProfileProps {
+  onNavigate?: (view: AppView) => void;
+}
+
+export const Profile: React.FC<ProfileProps> = ({ onNavigate }) => {
   const [profile, setProfile] = useState<ProfileData | null>(null);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(false);
@@ -134,8 +139,17 @@ export const Profile: React.FC = () => {
 
       <Button
         variant="outline"
+        onClick={() => onNavigate?.(AppView.SETTINGS)}
+        className="w-full"
+      >
+        <Settings size={18} className="mr-2" />
+        Settings
+      </Button>
+
+      <Button
+        variant="outline"
         onClick={handleLogout}
-        className="w-full border-red-500/30 text-red-400 hover:bg-red-500/10"
+        className="w-full border-destructive/30 text-destructive hover:bg-destructive/10"
       >
         <LogOut size={18} className="mr-2" />
         Logout

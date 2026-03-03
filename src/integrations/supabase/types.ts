@@ -450,6 +450,87 @@ export type Database = {
         }
         Relationships: []
       }
+      user_settings: {
+        Row: {
+          assistant_name: string
+          auto_location: boolean
+          chat_notifications: boolean
+          created_at: string
+          default_location: string | null
+          default_pet_type: string
+          font_size: number
+          health_notifications: boolean
+          id: string
+          language: string
+          marketing_notifications: boolean
+          memory_enabled: boolean
+          open_in_maps: boolean
+          reminder_notifications: boolean
+          response_length: string
+          response_style: string
+          subscription_plan: string
+          theme_mode: string
+          two_factor_enabled: boolean
+          unit_system: string
+          updated_at: string
+          user_id: string
+          vet_alerts: boolean
+          voice_preference: string
+        }
+        Insert: {
+          assistant_name?: string
+          auto_location?: boolean
+          chat_notifications?: boolean
+          created_at?: string
+          default_location?: string | null
+          default_pet_type?: string
+          font_size?: number
+          health_notifications?: boolean
+          id?: string
+          language?: string
+          marketing_notifications?: boolean
+          memory_enabled?: boolean
+          open_in_maps?: boolean
+          reminder_notifications?: boolean
+          response_length?: string
+          response_style?: string
+          subscription_plan?: string
+          theme_mode?: string
+          two_factor_enabled?: boolean
+          unit_system?: string
+          updated_at?: string
+          user_id: string
+          vet_alerts?: boolean
+          voice_preference?: string
+        }
+        Update: {
+          assistant_name?: string
+          auto_location?: boolean
+          chat_notifications?: boolean
+          created_at?: string
+          default_location?: string | null
+          default_pet_type?: string
+          font_size?: number
+          health_notifications?: boolean
+          id?: string
+          language?: string
+          marketing_notifications?: boolean
+          memory_enabled?: boolean
+          open_in_maps?: boolean
+          reminder_notifications?: boolean
+          response_length?: string
+          response_style?: string
+          subscription_plan?: string
+          theme_mode?: string
+          two_factor_enabled?: boolean
+          unit_system?: string
+          updated_at?: string
+          user_id?: string
+          vet_alerts?: boolean
+          voice_preference?: string
+        }
+        Relationships: []
+      }
       vaccinations: {
         Row: {
           created_at: string | null
