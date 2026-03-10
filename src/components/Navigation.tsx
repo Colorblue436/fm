@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Dog, Calendar, MessageCircle, LogOut, Users, Play, Grid, User, MapPin, Megaphone, Plus, ClipboardList, UtensilsCrossed, Stethoscope } from 'lucide-react';
+import { Home, Dog, Calendar, MessageCircle, LogOut, Users, Play, Grid, User, MapPin, Megaphone, Plus, ClipboardList, UtensilsCrossed, Stethoscope } from 'lucide-react';
 import { AppView } from '../types';
 import { FamiliarLogo } from './ui/FamiliarLogo';
 
@@ -30,7 +30,6 @@ export const Navigation: React.FC<NavigationProps> = ({
     setLastTap(now);
   };
 
-  // Close quick actions on outside click
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (quickActionsRef.current && !quickActionsRef.current.contains(e.target as Node)) {
@@ -47,9 +46,7 @@ export const Navigation: React.FC<NavigationProps> = ({
   };
 
   const handlePawLongPressStart = () => {
-    longPressTimer.current = setTimeout(() => {
-      setShowQuickActions(true);
-    }, 500);
+    longPressTimer.current = setTimeout(() => setShowQuickActions(true), 500);
   };
 
   const handlePawLongPressEnd = () => {
@@ -64,6 +61,14 @@ export const Navigation: React.FC<NavigationProps> = ({
   ];
 
   const standardNavItems = [
+    { view: AppView.HOME, icon: Home, label: 'Home' },
+    { view: AppView.PETS, icon: Dog, label: 'Pets' },
+    { view: AppView.REMINDERS, icon: Calendar, label: 'Tasks' },
+    { view: AppView.NEARBY, icon: MapPin, label: 'Nearby' },
+    { view: AppView.ASSISTANT, icon: MessageCircle, label: 'Chat' },
+  ];
+
+  const mobileNavItems = [
     { view: AppView.PETS, icon: Dog, label: 'Pets' },
     { view: AppView.REMINDERS, icon: Calendar, label: 'Tasks' },
     { view: AppView.NEARBY, icon: MapPin, label: 'Nearby' },
@@ -78,21 +83,11 @@ export const Navigation: React.FC<NavigationProps> = ({
     { view: AppView.PROFILE, icon: User, label: 'Profile' },
   ];
 
-  const navItems = isYouMode ? youNavItems : standardNavItems;
+  const desktopNavItems = isYouMode ? youNavItems : standardNavItems;
+  const navItems = isYouMode ? youNavItems : mobileNavItems;
   const isHomeActive = currentView === AppView.HOME && !isYouMode;
-  
-  const sidebarBg = isYouMode ? 'bg-zinc-800 border-zinc-700' : 'bg-white border-gray-100';
-  const bottomBarBg = isYouMode ? 'bg-zinc-800 border-zinc-700' : 'bg-white/95 backdrop-blur-lg border-gray-100';
-  const logoTextColor = isYouMode ? 'text-white' : 'text-familiar-900';
-  
-  const activeItemStyle = isYouMode 
-    ? 'text-white bg-familiar-600 shadow-md' 
-    : 'text-familiar-600 bg-familiar-50 md:bg-familiar-100';
-  const inactiveItemStyle = isYouMode 
-    ? 'text-zinc-400 hover:bg-zinc-700 hover:text-white' 
-    : 'text-gray-500 hover:bg-gray-50 hover:text-gray-700';
 
-  const renderMobileItem = (item: typeof standardNavItems[0]) => {
+  const renderMobileItem = (item: typeof mobileNavItems[0]) => {
     const isActive = currentView === item.view;
     return (
       <button
@@ -104,71 +99,66 @@ export const Navigation: React.FC<NavigationProps> = ({
           <item.icon 
             size={22} 
             strokeWidth={isActive ? 2.5 : 1.8} 
-            className={`transition-colors ${isActive ? 'text-familiar-500' : 'text-gray-400'}`}
+            className={`transition-colors ${isActive ? 'text-familiar-500' : 'text-muted-foreground'}`}
           />
         </div>
-        <span className={`text-[10px] mt-0.5 font-medium transition-colors ${isActive ? 'text-familiar-500' : 'text-gray-400'}`}>
+        <span className={`text-[10px] mt-0.5 font-medium transition-colors ${isActive ? 'text-familiar-500' : 'text-muted-foreground'}`}>
           {item.label}
         </span>
       </button>
     );
   };
 
-  // Desktop sidebar items include Home
-  const desktopNavItems = isYouMode ? youNavItems : [
-    { view: AppView.HOME, icon: FamiliarLogo as any, label: 'Home' },
-    ...standardNavItems,
-  ];
-
   return (
     <>
       {/* Desktop Sidebar */}
-      <nav className={`hidden md:flex flex-col w-64 border-r h-screen p-4 fixed left-0 top-0 z-20 transition-colors duration-500 ${sidebarBg}`}>
+      <nav className={`hidden md:flex flex-col w-56 border-r border-border h-screen py-5 px-3 fixed left-0 top-0 z-20 transition-colors duration-500 bg-card`}>
         <div 
-          className="flex items-center gap-2 mb-8 px-4 cursor-pointer select-none group"
+          className="flex items-center gap-2.5 mb-6 px-3 cursor-pointer select-none group"
           onClick={handleLogoTap}
           title="Double tap to switch modes"
         >
-          <div className="w-10 h-10 bg-familiar-500 rounded-xl flex items-center justify-center text-white font-bold shadow-lg shadow-familiar-500/30 group-hover:scale-105 transition-transform">
-            {isYouMode ? <User size={20} /> : <FamiliarLogo className="w-6 h-6" />}
+          <div className="w-8 h-8 bg-familiar-500 rounded-lg flex items-center justify-center text-white shadow-md shadow-familiar-500/20 group-hover:scale-105 transition-transform">
+            {isYouMode ? <User size={16} /> : <FamiliarLogo className="w-5 h-5" />}
           </div>
-          <span className={`text-xl font-bold ${logoTextColor} tracking-tight`}>
+          <span className="text-lg font-bold text-foreground tracking-tight">
             {isYouMode ? 'You' : 'Familiar'}
           </span>
         </div>
         
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-0.5">
           {desktopNavItems.map((item) => {
             const isActive = currentView === item.view;
             return (
               <button
                 key={item.view}
                 onClick={() => onChangeView(item.view)}
-                className={`flex items-center px-4 py-3 rounded-2xl transition-all duration-200 ${
-                  isActive ? `${activeItemStyle} font-semibold` : inactiveItemStyle
+                className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-sm transition-all duration-150 ${
+                  isActive 
+                    ? 'bg-familiar-100 text-familiar-700 font-semibold' 
+                    : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                 }`}
               >
-                <item.icon size={22} strokeWidth={isActive ? 2.5 : 2} className="mr-3" />
-                <span className="text-sm">{item.label}</span>
+                <item.icon size={18} strokeWidth={isActive ? 2.5 : 1.8} />
+                <span>{item.label}</span>
               </button>
             );
           })}
         </div>
 
-        <div className="mt-auto px-4 pb-4">
+        <div className="mt-auto px-3 pb-2">
           <button 
             onClick={onLogout}
-            className={`flex items-center text-sm w-full transition-colors ${isYouMode ? 'text-zinc-500 hover:text-red-400' : 'text-gray-400 hover:text-red-500'}`}
+            className="flex items-center gap-2.5 text-sm text-muted-foreground hover:text-destructive transition-colors w-full py-2"
           >
-            <LogOut size={18} className="mr-3" />
+            <LogOut size={16} />
             Logout
           </button>
         </div>
       </nav>
 
       {/* Mobile Bottom Bar */}
-      <nav className={`md:hidden fixed bottom-0 left-0 right-0 border-t pb-safe z-20 rounded-t-3xl shadow-[0_-2px_20px_-4px_rgba(0,0,0,0.08)] transition-colors duration-500 ${bottomBarBg}`}>
-        {/* Quick Actions Popup */}
+      <nav className={`md:hidden fixed bottom-0 left-0 right-0 border-t border-border pb-safe z-20 rounded-t-3xl shadow-[0_-2px_20px_-4px_rgba(0,0,0,0.08)] transition-colors duration-500 bg-card/95 backdrop-blur-lg`}>
         {showQuickActions && (
           <div ref={quickActionsRef} className="absolute bottom-full left-1/2 -translate-x-1/2 mb-4 animate-in fade-in slide-in-from-bottom-4 duration-200">
             <div className="bg-card rounded-2xl shadow-xl border border-border p-2 grid grid-cols-2 gap-1 min-w-[200px]">
@@ -190,19 +180,14 @@ export const Navigation: React.FC<NavigationProps> = ({
         )}
 
         <div className="flex justify-between items-end px-4 pb-2 pt-1">
-          {/* Left side: Pets, Tasks */}
           <div className="flex flex-1 justify-around">
-            {isYouMode 
-              ? navItems.slice(0, 2).map(renderMobileItem)
-              : navItems.slice(0, 2).map(renderMobileItem)
-            }
+            {navItems.slice(0, 2).map(renderMobileItem)}
           </div>
           
-          {/* Center: Floating Paw Button */}
           <div className="relative -top-5 mx-3 flex-shrink-0 z-30">
             {isYouMode ? (
               <div 
-                className="w-14 h-14 bg-zinc-700 rounded-full flex items-center justify-center text-white shadow-lg border-4 border-zinc-800 cursor-pointer transition-transform active:scale-95"
+                className="w-14 h-14 bg-muted rounded-full flex items-center justify-center text-foreground shadow-lg border-4 border-card cursor-pointer transition-transform active:scale-95"
                 onClick={handleLogoTap}
               >
                 <User size={24} />
@@ -215,7 +200,7 @@ export const Navigation: React.FC<NavigationProps> = ({
                 onMouseLeave={handlePawLongPressEnd}
                 onTouchStart={handlePawLongPressStart}
                 onTouchEnd={handlePawLongPressEnd}
-                className={`w-[60px] h-[60px] rounded-full flex items-center justify-center text-white border-4 border-background cursor-pointer transition-all active:scale-90 shadow-[0_4px_20px_-2px_rgba(139,92,246,0.5)] ${
+                className={`w-[60px] h-[60px] rounded-full flex items-center justify-center text-white border-4 border-card cursor-pointer transition-all active:scale-90 shadow-[0_4px_20px_-2px_hsl(var(--familiar-500)/0.4)] ${
                   isHomeActive 
                     ? 'bg-gradient-to-br from-[hsl(var(--purple-start))] to-[hsl(var(--purple-end))] scale-110' 
                     : 'bg-gradient-to-br from-[hsl(var(--purple-start))] to-[hsl(var(--purple-end))]'
@@ -226,12 +211,8 @@ export const Navigation: React.FC<NavigationProps> = ({
             )}
           </div>
 
-          {/* Right side: Nearby, Chat */}
           <div className="flex flex-1 justify-around">
-            {isYouMode 
-              ? navItems.slice(2, 4).map(renderMobileItem)
-              : navItems.slice(2, 4).map(renderMobileItem)
-            }
+            {navItems.slice(2, 4).map(renderMobileItem)}
           </div>
         </div>
       </nav>
