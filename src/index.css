@@ -60,6 +60,9 @@
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 16 85% 55%;
+
+    --purple-start: 262 83% 58%;
+    --purple-end: 280 73% 48%;
   }
 
   .dark {
