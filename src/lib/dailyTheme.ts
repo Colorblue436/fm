@@ -1,12 +1,12 @@
 // Daily rotating theme colors - changes based on day of week
 const themeColors = [
-  { name: 'coral', hue: 16, saturation: 85, lightness: 55 },      // Sunday
-  { name: 'teal', hue: 174, saturation: 72, lightness: 45 },      // Monday  
-  { name: 'violet', hue: 270, saturation: 65, lightness: 55 },    // Tuesday
-  { name: 'emerald', hue: 152, saturation: 68, lightness: 42 },   // Wednesday
-  { name: 'amber', hue: 38, saturation: 92, lightness: 50 },      // Thursday
-  { name: 'rose', hue: 350, saturation: 75, lightness: 55 },      // Friday
-  { name: 'sky', hue: 199, saturation: 89, lightness: 48 },       // Saturday
+  { name: 'lavender', hue: 270, saturation: 60, lightness: 65 },    // Sunday
+  { name: 'soft-purple', hue: 262, saturation: 68, lightness: 58 }, // Monday
+  { name: 'sky-blue', hue: 200, saturation: 80, lightness: 52 },    // Tuesday
+  { name: 'mint-green', hue: 160, saturation: 55, lightness: 45 },  // Wednesday
+  { name: 'coral', hue: 16, saturation: 85, lightness: 55 },        // Thursday
+  { name: 'indigo', hue: 235, saturation: 70, lightness: 55 },      // Friday
+  { name: 'peach', hue: 25, saturation: 90, lightness: 60 },        // Saturday
 ];
 
 export function getDailyTheme() {
@@ -46,8 +46,13 @@ export function applyDailyTheme() {
   root.style.setProperty('--familiar-800', `${theme.hue} ${theme.saturation}% ${theme.lightness - 22}%`);
   root.style.setProperty('--familiar-900', `${theme.hue} ${theme.saturation}% ${theme.lightness - 30}%`);
   
-  // Update primary to match daily theme
+  // Update primary & ring to match daily theme
   root.style.setProperty('--primary', `${theme.hue} ${theme.saturation}% ${theme.lightness}%`);
+  root.style.setProperty('--ring', `${theme.hue} ${theme.saturation}% ${theme.lightness}%`);
+
+  // Update purple gradient to match daily theme for the floating nav button
+  root.style.setProperty('--purple-start', `${theme.hue} ${theme.saturation}% ${theme.lightness}%`);
+  root.style.setProperty('--purple-end', `${Math.min(theme.hue + 18, 360)} ${Math.max(theme.saturation - 10, 40)}% ${Math.max(theme.lightness - 10, 35)}%`);
   
   return theme;
 }
