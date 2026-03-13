@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Dog, Calendar, Plus, Clock, ChevronRight, MapPin, Stethoscope, UtensilsCrossed, ClipboardList, Lightbulb, CheckCircle2, Circle, Store, Activity } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { FamiliarLogo } from '@/components/ui/FamiliarLogo';
@@ -130,14 +131,21 @@ export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
   return (
     <div className="space-y-5 pb-24 md:pb-4">
       <div className="rounded-2xl overflow-hidden shadow-sm relative">
-        {heroPetPhoto && (
-          <img
-            src={heroPetPhoto}
-            alt="Your pet"
-            className="absolute inset-0 w-full h-full object-cover"
-            onError={() => setHeroPetPhoto(null)}
-          />
-        )}
+        <AnimatePresence>
+          {heroPetPhoto && (
+            <motion.img
+              key={heroPetPhoto}
+              src={heroPetPhoto}
+              alt="Your pet"
+              className="absolute inset-0 w-full h-full object-cover"
+              initial={{ opacity: 0, scale: 1.05 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.8, ease: 'easeOut' }}
+              onError={() => setHeroPetPhoto(null)}
+            />
+          )}
+        </AnimatePresence>
         <div className={`relative p-7 md:p-10 min-h-[180px] md:min-h-[200px] flex items-end ${heroPetPhoto ? 'bg-gradient-to-t from-black/70 via-black/40 to-black/20' : 'bg-gradient-to-r from-familiar-500 to-familiar-600'}`}>
           <div className={`${heroPetPhoto ? '' : 'absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full blur-3xl -translate-y-1/3 translate-x-1/3'}`} />
           
