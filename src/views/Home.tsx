@@ -138,7 +138,7 @@ export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
             onError={() => setHeroPetPhoto(null)}
           />
         )}
-        <div className={`relative p-5 md:p-6 ${heroPetPhoto ? 'bg-gradient-to-t from-black/70 via-black/40 to-black/20' : 'bg-gradient-to-r from-familiar-500 to-familiar-600'}`}>
+        <div className={`relative p-7 md:p-10 min-h-[180px] md:min-h-[200px] flex items-end ${heroPetPhoto ? 'bg-gradient-to-t from-black/70 via-black/40 to-black/20' : 'bg-gradient-to-r from-familiar-500 to-familiar-600'}`}>
           <div className={`${heroPetPhoto ? '' : 'absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full blur-3xl -translate-y-1/3 translate-x-1/3'}`} />
           
           <div className="relative z-10 flex items-center justify-between">
