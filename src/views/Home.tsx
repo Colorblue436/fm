@@ -48,6 +48,7 @@ export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
   const [loading, setLoading] = useState(true);
   const [displayName, setDisplayName] = useState('');
   const [todayTip] = useState(() => petTips[new Date().getDate() % petTips.length]);
+  const [heroPetPhoto, setHeroPetPhoto] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
