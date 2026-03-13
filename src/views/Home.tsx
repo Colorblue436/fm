@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Dog, Calendar, Plus, Clock, ChevronRight, MapPin, Stethoscope, UtensilsCrossed, ClipboardList, Lightbulb, CheckCircle2, Circle, Store, Activity } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { FamiliarLogo } from '@/components/ui/FamiliarLogo';
