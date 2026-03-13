@@ -63,7 +63,13 @@ export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
         supabase.from('profiles').select('display_name').eq('user_id', user.id).single(),
       ]);
 
-      if (petsRes.data) setPets(petsRes.data);
+      if (petsRes.data) {
+        setPets(petsRes.data);
+        const petsWithPhotos = petsRes.data.filter(p => p.avatar_url);
+        if (petsWithPhotos.length > 0) {
+          setHeroPetPhoto(petsWithPhotos[Math.floor(Math.random() * petsWithPhotos.length)].avatar_url!);
+        }
+      }
       if (remindersRes.data) setReminders(remindersRes.data);
       if (todayRes.data) setAllTodayReminders(todayRes.data);
       if (profileRes.data?.display_name) setDisplayName(profileRes.data.display_name);
