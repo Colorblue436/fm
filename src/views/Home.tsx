@@ -48,6 +48,7 @@ export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
   const [loading, setLoading] = useState(true);
   const [displayName, setDisplayName] = useState('');
   const [todayTip] = useState(() => petTips[new Date().getDate() % petTips.length]);
+  const [heroPetPhoto, setHeroPetPhoto] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -62,7 +63,13 @@ export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
         supabase.from('profiles').select('display_name').eq('user_id', user.id).single(),
       ]);
 
-      if (petsRes.data) setPets(petsRes.data);
+      if (petsRes.data) {
+        setPets(petsRes.data);
+        const petsWithPhotos = petsRes.data.filter(p => p.avatar_url);
+        if (petsWithPhotos.length > 0) {
+          setHeroPetPhoto(petsWithPhotos[Math.floor(Math.random() * petsWithPhotos.length)].avatar_url!);
+        }
+      }
       if (remindersRes.data) setReminders(remindersRes.data);
       if (todayRes.data) setAllTodayReminders(todayRes.data);
       if (profileRes.data?.display_name) setDisplayName(profileRes.data.display_name);
@@ -122,32 +129,41 @@ export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
 
   return (
     <div className="space-y-5 pb-24 md:pb-4">
-      {/* Welcome Card — lighter on desktop */}
-      <div className="bg-gradient-to-r from-familiar-500 to-familiar-600 rounded-2xl p-5 md:p-6 text-white relative overflow-hidden shadow-sm">
-        <div className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full blur-3xl -translate-y-1/3 translate-x-1/3" />
-        
-        <div className="relative z-10 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
-              <FamiliarLogo className="w-6 h-6" />
+      <div className="rounded-2xl overflow-hidden shadow-sm relative">
+        {heroPetPhoto && (
+          <img
+            src={heroPetPhoto}
+            alt="Your pet"
+            className="absolute inset-0 w-full h-full object-cover"
+            onError={() => setHeroPetPhoto(null)}
+          />
+        )}
+        <div className={`relative p-5 md:p-6 ${heroPetPhoto ? 'bg-gradient-to-t from-black/70 via-black/40 to-black/20' : 'bg-gradient-to-r from-familiar-500 to-familiar-600'}`}>
+          <div className={`${heroPetPhoto ? '' : 'absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full blur-3xl -translate-y-1/3 translate-x-1/3'}`} />
+          
+          <div className="relative z-10 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
+                <FamiliarLogo className="w-6 h-6" />
+              </div>
+              <div>
+                <h1 className="text-lg md:text-xl font-bold text-white">{getGreeting()}, {displayName || 'there'}</h1>
+                <p className="text-white/80 text-sm">
+                  {pets.length > 0 
+                    ? `${pets.length} pet${pets.length > 1 ? 's' : ''} · ${reminders.length} task${reminders.length !== 1 ? 's' : ''} pending`
+                    : 'Get started by adding your first pet!'}
+                </p>
+              </div>
             </div>
-            <div>
-              <h1 className="text-lg md:text-xl font-bold text-white">{getGreeting()}, {displayName || 'there'}</h1>
-              <p className="text-white/70 text-sm">
-                {pets.length > 0 
-                  ? `${pets.length} pet${pets.length > 1 ? 's' : ''} · ${reminders.length} task${reminders.length !== 1 ? 's' : ''} pending`
-                  : 'Get started by adding your first pet!'}
-              </p>
-            </div>
+            <Button 
+              onClick={() => onNavigate(AppView.PETS)}
+              size="sm"
+              className="bg-white/20 backdrop-blur-sm text-white hover:bg-white/30 border-0"
+            >
+              <Dog size={16} className="mr-1.5" />
+              {pets.length > 0 ? 'Manage Pets' : 'Add Pet'}
+            </Button>
           </div>
-          <Button 
-            onClick={() => onNavigate(AppView.PETS)}
-            size="sm"
-            className="hidden md:flex bg-white/20 backdrop-blur-sm text-white hover:bg-white/30 border-0"
-          >
-            <Dog size={16} className="mr-1.5" />
-            {pets.length > 0 ? 'Manage Pets' : 'Add Pet'}
-          </Button>
         </div>
       </div>
 
