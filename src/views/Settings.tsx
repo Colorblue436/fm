@@ -109,7 +109,9 @@ export const Settings: React.FC<SettingsProps> = ({ onBack }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [passwordForm, setPasswordForm] = useState({ current: '', new: '', confirm: '' });
   const [profileForm, setProfileForm] = useState({ display_name: '', bio: '' });
+  const [userId, setUserId] = useState<string | undefined>();
   const { addToast } = useToast();
+  const { role, updateRole } = useUserRole(userId);
 
   const fetchSettings = useCallback(async () => {
     const { data: { user } } = await supabase.auth.getUser();
