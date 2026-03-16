@@ -2,10 +2,11 @@ import React, { useState, useEffect, useCallback } from 'react';
 import {
   Settings as SettingsIcon, User, Bot, PawPrint, MapPin, Bell, Palette,
   Shield, CreditCard, ChevronDown, ChevronUp, LogOut, Trash2, Download,
-  Lock, FileText, Eye, EyeOff, Save, Loader2, ArrowLeft
+  Lock, FileText, Eye, EyeOff, Save, Loader2, ArrowLeft, Layers
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/context/ToastContext';
+import { useUserRole } from '@/hooks/useUserRole';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
