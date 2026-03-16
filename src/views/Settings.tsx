@@ -323,7 +323,44 @@ export const Settings: React.FC<SettingsProps> = ({ onBack }) => {
         </div>
       </SettingSection>
 
-      {/* 2. Assistant */}
+      {/* 2. User Role */}
+      <SettingSection icon={<Layers size={18} />} title="App Mode">
+        <p className="text-xs text-muted-foreground mb-3">Choose how you use Familiar. This controls which features and pages you see.</p>
+        <div className="space-y-2">
+          {[
+            { value: 'pet_parent' as const, label: 'Pet Parent', desc: 'Pet care tools, reminders, vets, AI chat' },
+            { value: 'visitor' as const, label: 'Visitor', desc: 'Community, groups, drops, bulletin board' },
+            { value: 'both' as const, label: 'Both', desc: 'Full access to all features' },
+          ].map(opt => (
+            <button
+              key={opt.value}
+              onClick={async () => {
+                await updateRole(opt.value);
+                addToast(`Switched to ${opt.label} mode`, 'success');
+                // Reload to apply nav changes
+                window.location.reload();
+              }}
+              className={`w-full flex items-center justify-between p-3 rounded-xl border-2 text-left transition-all ${
+                role === opt.value
+                  ? 'border-primary bg-primary/5'
+                  : 'border-border hover:border-primary/40'
+              }`}
+            >
+              <div>
+                <p className="text-sm font-medium text-foreground">{opt.label}</p>
+                <p className="text-xs text-muted-foreground">{opt.desc}</p>
+              </div>
+              <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${
+                role === opt.value ? 'border-primary bg-primary' : 'border-muted-foreground/40'
+              }`}>
+                {role === opt.value && <div className="w-1.5 h-1.5 rounded-full bg-primary-foreground" />}
+              </div>
+            </button>
+          ))}
+        </div>
+      </SettingSection>
+
+      {/* 3. Assistant */}
       <SettingSection icon={<Bot size={18} />} title="Assistant Settings">
         <div>
           <Label className="text-xs text-muted-foreground">Assistant Name</Label>
