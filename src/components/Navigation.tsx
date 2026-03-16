@@ -2,6 +2,8 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Home, Dog, Calendar, MessageCircle, LogOut, Users, Play, Grid, User, MapPin, Megaphone, Plus, ClipboardList, UtensilsCrossed, Stethoscope } from 'lucide-react';
 import { AppView } from '../types';
 import { FamiliarLogo } from './ui/FamiliarLogo';
+import type { UserRole } from '@/hooks/useUserRole';
+import { getAllowedViews } from '@/lib/roleAccess';
 
 interface NavigationProps {
   currentView: AppView;
@@ -9,6 +11,7 @@ interface NavigationProps {
   onLogout: () => void;
   isYouMode: boolean;
   onToggleYouMode: () => void;
+  userRole?: UserRole;
 }
 
 export const Navigation: React.FC<NavigationProps> = ({ 
@@ -16,18 +19,24 @@ export const Navigation: React.FC<NavigationProps> = ({
   onChangeView, 
   onLogout,
   isYouMode,
-  onToggleYouMode
+  onToggleYouMode,
+  userRole
 }) => {
   const [lastTap, setLastTap] = useState(0);
   const [showQuickActions, setShowQuickActions] = useState(false);
   const longPressTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const quickActionsRef = useRef<HTMLDivElement>(null);
 
+  const allowedViews = getAllowedViews(userRole);
+
   const handleLogoTap = (e: React.MouseEvent) => {
     e.preventDefault();
-    const now = Date.now();
-    if (now - lastTap < 300) onToggleYouMode();
-    setLastTap(now);
+    // Only allow mode toggle for 'both' role
+    if (userRole === 'both') {
+      const now = Date.now();
+      if (now - lastTap < 300) onToggleYouMode();
+      setLastTap(now);
+    }
   };
 
   useEffect(() => {
@@ -58,24 +67,19 @@ export const Navigation: React.FC<NavigationProps> = ({
     { icon: ClipboardList, label: 'Add Task', action: () => { onChangeView(AppView.REMINDERS); setShowQuickActions(false); } },
     { icon: UtensilsCrossed, label: 'Log Meal', action: () => { onChangeView(AppView.PETS); setShowQuickActions(false); } },
     { icon: Stethoscope, label: 'Find Vet', action: () => { onChangeView(AppView.NEARBY); setShowQuickActions(false); } },
-  ];
+  ].filter(qa => {
+    // Filter quick actions based on role
+    if (userRole === 'visitor') return false;
+    return true;
+  });
 
-  const standardNavItems = [
+  // All possible nav items
+  const allNavItems = [
     { view: AppView.HOME, icon: Home, label: 'Home' },
     { view: AppView.PETS, icon: Dog, label: 'Pets' },
     { view: AppView.REMINDERS, icon: Calendar, label: 'Tasks' },
     { view: AppView.NEARBY, icon: MapPin, label: 'Nearby' },
     { view: AppView.ASSISTANT, icon: MessageCircle, label: 'Chat' },
-  ];
-
-  const mobileNavItems = [
-    { view: AppView.PETS, icon: Dog, label: 'Pets' },
-    { view: AppView.REMINDERS, icon: Calendar, label: 'Tasks' },
-    { view: AppView.NEARBY, icon: MapPin, label: 'Nearby' },
-    { view: AppView.ASSISTANT, icon: MessageCircle, label: 'Chat' },
-  ];
-
-  const youNavItems = [
     { view: AppView.COMMUNITY, icon: Users, label: 'Community' },
     { view: AppView.DROPS, icon: Play, label: 'Drops' },
     { view: AppView.GROUPS, icon: Grid, label: 'Groups' },
@@ -83,11 +87,33 @@ export const Navigation: React.FC<NavigationProps> = ({
     { view: AppView.PROFILE, icon: User, label: 'Profile' },
   ];
 
-  const desktopNavItems = isYouMode ? youNavItems : standardNavItems;
-  const navItems = isYouMode ? youNavItems : mobileNavItems;
-  const isHomeActive = currentView === AppView.HOME && !isYouMode;
+  // Filter nav items by role
+  const filteredNavItems = allNavItems.filter(item => allowedViews.has(item.view));
 
-  const renderMobileItem = (item: typeof mobileNavItems[0]) => {
+  // For "both" role, split into two modes
+  const petCareViews = [AppView.HOME, AppView.PETS, AppView.REMINDERS, AppView.NEARBY, AppView.ASSISTANT];
+  const communityViews = [AppView.COMMUNITY, AppView.DROPS, AppView.GROUPS, AppView.SCRATCH_BOARD, AppView.PROFILE];
+
+  let desktopNavItems: typeof allNavItems;
+  let mobileNavItems: typeof allNavItems;
+
+  if (userRole === 'both') {
+    if (isYouMode) {
+      desktopNavItems = allNavItems.filter(i => communityViews.includes(i.view));
+      mobileNavItems = desktopNavItems.filter(i => i.view !== AppView.PROFILE).slice(0, 4);
+    } else {
+      desktopNavItems = allNavItems.filter(i => petCareViews.includes(i.view));
+      mobileNavItems = desktopNavItems.filter(i => i.view !== AppView.HOME).slice(0, 4);
+    }
+  } else {
+    desktopNavItems = filteredNavItems;
+    mobileNavItems = filteredNavItems.filter(i => i.view !== AppView.HOME && i.view !== AppView.PROFILE && i.view !== AppView.SETTINGS).slice(0, 4);
+  }
+
+  const isHomeActive = currentView === AppView.HOME && !isYouMode;
+  const showPawButton = userRole !== 'visitor';
+
+  const renderMobileItem = (item: typeof allNavItems[0]) => {
     const isActive = currentView === item.view;
     return (
       <button
@@ -116,13 +142,13 @@ export const Navigation: React.FC<NavigationProps> = ({
         <div 
           className="flex items-center gap-2.5 mb-6 px-3 cursor-pointer select-none group"
           onClick={handleLogoTap}
-          title="Double tap to switch modes"
+          title={userRole === 'both' ? "Double tap to switch modes" : "Familiar"}
         >
           <div className="w-8 h-8 bg-familiar-500 rounded-lg flex items-center justify-center text-white shadow-md shadow-familiar-500/20 group-hover:scale-105 transition-transform">
             {isYouMode ? <User size={16} /> : <FamiliarLogo className="w-5 h-5" />}
           </div>
           <span className="text-lg font-bold text-foreground tracking-tight">
-            {isYouMode ? 'You' : 'Familiar'}
+            {isYouMode ? 'Community' : 'Familiar'}
           </span>
         </div>
         
@@ -159,7 +185,7 @@ export const Navigation: React.FC<NavigationProps> = ({
 
       {/* Mobile Bottom Bar */}
       <nav className={`md:hidden fixed bottom-0 left-0 right-0 border-t border-border pb-safe z-20 rounded-t-3xl shadow-[0_-2px_20px_-4px_rgba(0,0,0,0.08)] transition-colors duration-500 bg-card/95 backdrop-blur-lg`}>
-        {showQuickActions && (
+        {showQuickActions && quickActions.length > 0 && (
           <div ref={quickActionsRef} className="absolute bottom-full left-1/2 -translate-x-1/2 mb-4 animate-in fade-in slide-in-from-bottom-4 duration-200">
             <div className="bg-card rounded-2xl shadow-xl border border-border p-2 grid grid-cols-2 gap-1 min-w-[200px]">
               {quickActions.map((qa) => (
@@ -181,38 +207,48 @@ export const Navigation: React.FC<NavigationProps> = ({
 
         <div className="flex justify-between items-end px-4 pb-2 pt-1">
           <div className="flex flex-1 justify-around">
-            {navItems.slice(0, 2).map(renderMobileItem)}
+            {mobileNavItems.slice(0, 2).map(renderMobileItem)}
           </div>
           
           <div className="relative -top-5 mx-3 flex-shrink-0 z-30">
-            {isYouMode ? (
-              <div 
-                className="w-14 h-14 bg-muted rounded-full flex items-center justify-center text-foreground shadow-lg border-4 border-card cursor-pointer transition-transform active:scale-95"
-                onClick={handleLogoTap}
-              >
-                <User size={24} />
-              </div>
+            {showPawButton ? (
+              isYouMode ? (
+                <div 
+                  className="w-14 h-14 bg-muted rounded-full flex items-center justify-center text-foreground shadow-lg border-4 border-card cursor-pointer transition-transform active:scale-95"
+                  onClick={handleLogoTap}
+                >
+                  <User size={24} />
+                </div>
+              ) : (
+                <button
+                  onClick={handlePawPress}
+                  onMouseDown={handlePawLongPressStart}
+                  onMouseUp={handlePawLongPressEnd}
+                  onMouseLeave={handlePawLongPressEnd}
+                  onTouchStart={handlePawLongPressStart}
+                  onTouchEnd={handlePawLongPressEnd}
+                  className={`w-[60px] h-[60px] rounded-full flex items-center justify-center text-white border-4 border-card cursor-pointer transition-all active:scale-90 shadow-[0_4px_20px_-2px_hsl(var(--familiar-500)/0.4)] ${
+                    isHomeActive 
+                      ? 'bg-gradient-to-br from-[hsl(var(--purple-start))] to-[hsl(var(--purple-end))] scale-110' 
+                      : 'bg-gradient-to-br from-[hsl(var(--purple-start))] to-[hsl(var(--purple-end))]'
+                  }`}
+                >
+                  <FamiliarLogo className={`w-8 h-8 transition-transform ${isHomeActive ? 'scale-110' : ''}`} />
+                </button>
+              )
             ) : (
-              <button
-                onClick={handlePawPress}
-                onMouseDown={handlePawLongPressStart}
-                onMouseUp={handlePawLongPressEnd}
-                onMouseLeave={handlePawLongPressEnd}
-                onTouchStart={handlePawLongPressStart}
-                onTouchEnd={handlePawLongPressEnd}
-                className={`w-[60px] h-[60px] rounded-full flex items-center justify-center text-white border-4 border-card cursor-pointer transition-all active:scale-90 shadow-[0_4px_20px_-2px_hsl(var(--familiar-500)/0.4)] ${
-                  isHomeActive 
-                    ? 'bg-gradient-to-br from-[hsl(var(--purple-start))] to-[hsl(var(--purple-end))] scale-110' 
-                    : 'bg-gradient-to-br from-[hsl(var(--purple-start))] to-[hsl(var(--purple-end))]'
-                }`}
+              // Visitor: no paw button, just a spacer or community icon
+              <div 
+                className="w-14 h-14 bg-primary rounded-full flex items-center justify-center text-primary-foreground shadow-lg border-4 border-card cursor-pointer transition-transform active:scale-95"
+                onClick={() => onChangeView(AppView.COMMUNITY)}
               >
-                <FamiliarLogo className={`w-8 h-8 transition-transform ${isHomeActive ? 'scale-110' : ''}`} />
-              </button>
+                <Users size={24} />
+              </div>
             )}
           </div>
 
           <div className="flex flex-1 justify-around">
-            {navItems.slice(2, 4).map(renderMobileItem)}
+            {mobileNavItems.slice(2, 4).map(renderMobileItem)}
           </div>
         </div>
       </nav>
