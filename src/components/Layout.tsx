@@ -30,6 +30,7 @@ export const Layout: React.FC<LayoutProps> = ({
         onLogout={onLogout} 
         isYouMode={isYouMode}
         onToggleYouMode={onToggleYouMode}
+        userRole={userRole}
       />
       
       <main className="flex-1 md:ml-56 w-full min-h-screen overflow-y-auto pb-24 md:pb-6 p-4 md:px-8 md:py-6">
