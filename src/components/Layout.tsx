@@ -1,14 +1,16 @@
 import React from 'react';
 import { Navigation } from './Navigation';
 import { AppView } from '../types';
+import type { UserRole } from '@/hooks/useUserRole';
 
-interface LayoutProps {
+export interface LayoutProps {
   children: React.ReactNode;
   currentView: AppView;
   onChangeView: (view: AppView) => void;
   onLogout: () => void;
   isYouMode: boolean;
   onToggleYouMode: () => void;
+  userRole?: UserRole;
 }
 
 export const Layout: React.FC<LayoutProps> = ({ 
@@ -17,7 +19,8 @@ export const Layout: React.FC<LayoutProps> = ({
   onChangeView, 
   onLogout,
   isYouMode,
-  onToggleYouMode
+  onToggleYouMode,
+  userRole
 }) => {
   return (
     <div className="min-h-screen flex bg-background text-foreground">
