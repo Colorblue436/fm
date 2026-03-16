@@ -116,6 +116,7 @@ export const Settings: React.FC<SettingsProps> = ({ onBack }) => {
   const fetchSettings = useCallback(async () => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
+    setUserId(user.id);
 
     setUserEmail(user.email || '');
     setUserCreatedAt(user.created_at || '');
