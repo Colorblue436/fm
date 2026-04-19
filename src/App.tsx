@@ -19,6 +19,7 @@ const Auth = React.lazy(() => import('@/views/Auth').then(m => ({ default: m.Aut
 const Onboarding = React.lazy(() => import('@/views/Onboarding').then(m => ({ default: m.Onboarding })));
 const Home = React.lazy(() => import('@/views/Home').then(m => ({ default: m.Home })));
 const PetManagement = React.lazy(() => import('@/views/PetManagement').then(m => ({ default: m.PetManagement })));
+const HealthRecords = React.lazy(() => import('@/views/HealthRecords').then(m => ({ default: m.HealthRecords })));
 const Reminders = React.lazy(() => import('@/views/Reminders').then(m => ({ default: m.Reminders })));
 const AiAssistant = React.lazy(() => import('@/views/AiAssistant').then(m => ({ default: m.AiAssistant })));
 const NearbyPlaces = React.lazy(() => import('@/views/NearbyPlaces').then(m => ({ default: m.NearbyPlaces })));
@@ -126,6 +127,8 @@ const AppContent: React.FC = () => {
         return <Home onNavigate={handleNavigate} />;
       case AppView.PETS:
         return <PetManagement />;
+      case AppView.HEALTH_RECORDS:
+        return <HealthRecords />;
       case AppView.REMINDERS:
         return <Reminders />;
       case AppView.ASSISTANT:
