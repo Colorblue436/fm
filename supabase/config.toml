@@ -2,3 +2,6 @@ project_id = "izeypxccqvtczjxvotmv"
 
 [functions.chat]
 verify_jwt = false
+
+[functions.summarize-record]
+verify_jwt = false
