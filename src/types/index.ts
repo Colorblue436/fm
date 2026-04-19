@@ -2,6 +2,7 @@ export enum AppView {
   HOME = 'home',
   DASHBOARD = 'dashboard',
   PETS = 'pets',
+  HEALTH_RECORDS = 'health_records',
   REMINDERS = 'reminders',
   ASSISTANT = 'assistant',
   NEARBY = 'nearby',

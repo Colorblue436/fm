@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Home, Dog, Calendar, MessageCircle, LogOut, Users, Play, Grid, User, MapPin, Megaphone, Plus, ClipboardList, UtensilsCrossed, Stethoscope } from 'lucide-react';
+import { Home, Dog, Calendar, MessageCircle, LogOut, Users, Play, Grid, User, MapPin, Megaphone, Plus, ClipboardList, UtensilsCrossed, Stethoscope, FileHeart } from 'lucide-react';
 import { AppView } from '../types';
 import { FamiliarLogo } from './ui/FamiliarLogo';
 import type { UserRole } from '@/hooks/useUserRole';
@@ -77,6 +77,7 @@ export const Navigation: React.FC<NavigationProps> = ({
   const allNavItems = [
     { view: AppView.HOME, icon: Home, label: 'Home' },
     { view: AppView.PETS, icon: Dog, label: 'Pets' },
+    { view: AppView.HEALTH_RECORDS, icon: FileHeart, label: 'Records' },
     { view: AppView.REMINDERS, icon: Calendar, label: 'Tasks' },
     { view: AppView.NEARBY, icon: MapPin, label: 'Nearby' },
     { view: AppView.ASSISTANT, icon: MessageCircle, label: 'Chat' },
@@ -91,7 +92,7 @@ export const Navigation: React.FC<NavigationProps> = ({
   const filteredNavItems = allNavItems.filter(item => allowedViews.has(item.view));
 
   // For "both" role, split into two modes
-  const petCareViews = [AppView.HOME, AppView.PETS, AppView.REMINDERS, AppView.NEARBY, AppView.ASSISTANT];
+  const petCareViews = [AppView.HOME, AppView.PETS, AppView.HEALTH_RECORDS, AppView.REMINDERS, AppView.NEARBY, AppView.ASSISTANT];
   const communityViews = [AppView.COMMUNITY, AppView.DROPS, AppView.GROUPS, AppView.SCRATCH_BOARD, AppView.PROFILE];
 
   let desktopNavItems: typeof allNavItems;
