@@ -63,6 +63,7 @@ export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
   const [chatMessages, setChatMessages] = useState<ChatMsg[]>([]);
   const [activePetIdx, setActivePetIdx] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [userId, setUserId] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     const fetchData = async () => {
