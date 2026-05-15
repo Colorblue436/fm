@@ -9,6 +9,7 @@ import { PetInsights } from '@/components/home/PetInsights';
 import { RemindersPanel } from '@/components/home/RemindersPanel';
 import { RecentActivity, ActivityItem } from '@/components/home/RecentActivity';
 import { QuickActionsPanel } from '@/components/home/QuickActionsPanel';
+import { PetGameCard } from '@/components/home/PetGameCard';
 
 interface HomeProps {
   onNavigate: (view: AppView) => void;
