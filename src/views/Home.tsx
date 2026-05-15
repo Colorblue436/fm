@@ -70,6 +70,7 @@ export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
       setLoading(true);
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) { setLoading(false); return; }
+      setUserId(user.id);
 
       const [petsRes, remindersRes, recordsRes, chatRes] = await Promise.all([
         supabase.from('pets').select('*').order('created_at', { ascending: false }),
