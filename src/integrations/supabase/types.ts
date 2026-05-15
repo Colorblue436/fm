@@ -325,6 +325,99 @@ export type Database = {
           },
         ]
       }
+      pet_stats: {
+        Row: {
+          created_at: string
+          current_streak: number
+          happiness: number
+          health_score: number
+          id: string
+          last_activity_at: string | null
+          level: number
+          longest_streak: number
+          mood: Database["public"]["Enums"]["pet_mood"]
+          pet_id: string
+          updated_at: string
+          user_id: string
+          xp: number
+        }
+        Insert: {
+          created_at?: string
+          current_streak?: number
+          happiness?: number
+          health_score?: number
+          id?: string
+          last_activity_at?: string | null
+          level?: number
+          longest_streak?: number
+          mood?: Database["public"]["Enums"]["pet_mood"]
+          pet_id: string
+          updated_at?: string
+          user_id: string
+          xp?: number
+        }
+        Update: {
+          created_at?: string
+          current_streak?: number
+          happiness?: number
+          health_score?: number
+          id?: string
+          last_activity_at?: string | null
+          level?: number
+          longest_streak?: number
+          mood?: Database["public"]["Enums"]["pet_mood"]
+          pet_id?: string
+          updated_at?: string
+          user_id?: string
+          xp?: number
+        }
+        Relationships: []
+      }
+      pet_tasks: {
+        Row: {
+          category: Database["public"]["Enums"]["task_category"]
+          created_at: string
+          description: string | null
+          id: string
+          is_active: boolean
+          pet_id: string
+          recurrence: Database["public"]["Enums"]["task_recurrence"]
+          time_of_day: string | null
+          title: string
+          updated_at: string
+          user_id: string
+          xp_reward: number
+        }
+        Insert: {
+          category: Database["public"]["Enums"]["task_category"]
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          pet_id: string
+          recurrence?: Database["public"]["Enums"]["task_recurrence"]
+          time_of_day?: string | null
+          title: string
+          updated_at?: string
+          user_id: string
+          xp_reward?: number
+        }
+        Update: {
+          category?: Database["public"]["Enums"]["task_category"]
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          pet_id?: string
+          recurrence?: Database["public"]["Enums"]["task_recurrence"]
+          time_of_day?: string | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+          xp_reward?: number
+        }
+        Relationships: []
+      }
       pets: {
         Row: {
           age: number | null
@@ -470,6 +563,54 @@ export type Database = {
           priority?: string
           title?: string
           updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      task_completions: {
+        Row: {
+          completed_at: string
+          id: string
+          pet_id: string
+          task_id: string
+          user_id: string
+          xp_earned: number
+        }
+        Insert: {
+          completed_at?: string
+          id?: string
+          pet_id: string
+          task_id: string
+          user_id: string
+          xp_earned?: number
+        }
+        Update: {
+          completed_at?: string
+          id?: string
+          pet_id?: string
+          task_id?: string
+          user_id?: string
+          xp_earned?: number
+        }
+        Relationships: []
+      }
+      user_achievements: {
+        Row: {
+          badge_key: string
+          earned_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          badge_key: string
+          earned_at?: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          badge_key?: string
+          earned_at?: string
+          id?: string
           user_id?: string
         }
         Relationships: []
@@ -630,6 +771,18 @@ export type Database = {
     }
     Enums: {
       app_role: "visitor" | "pet_parent" | "both"
+      pet_mood: "happy" | "sleepy" | "hungry" | "playful" | "lonely" | "sick"
+      task_category:
+        | "feeding"
+        | "walk"
+        | "medicine"
+        | "grooming"
+        | "hydration"
+        | "litter"
+        | "play"
+        | "training"
+        | "other"
+      task_recurrence: "daily" | "weekly" | "custom"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -758,6 +911,19 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["visitor", "pet_parent", "both"],
+      pet_mood: ["happy", "sleepy", "hungry", "playful", "lonely", "sick"],
+      task_category: [
+        "feeding",
+        "walk",
+        "medicine",
+        "grooming",
+        "hydration",
+        "litter",
+        "play",
+        "training",
+        "other",
+      ],
+      task_recurrence: ["daily", "weekly", "custom"],
     },
   },
 } as const
