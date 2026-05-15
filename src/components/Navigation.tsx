@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Home, Dog, Calendar, MessageCircle, LogOut, Users, Play, Grid, User, MapPin, Megaphone, Plus, ClipboardList, UtensilsCrossed, Stethoscope, FileHeart } from 'lucide-react';
+import { Home, Dog, Calendar, MessageCircle, LogOut, Users, Play, Grid, User, MapPin, Megaphone, Plus, ClipboardList, UtensilsCrossed, Stethoscope, FileHeart, ListChecks, Trophy } from 'lucide-react';
 import { AppView } from '../types';
 import { FamiliarLogo } from './ui/FamiliarLogo';
 import type { UserRole } from '@/hooks/useUserRole';
