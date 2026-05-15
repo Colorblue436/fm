@@ -178,6 +178,15 @@ export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
         totalPets={pets.length}
       />
 
+      {/* GAMIFICATION CARD */}
+      <PetGameCard
+        userId={userId}
+        petId={activePet?.id}
+        petType={activePet?.type}
+        petName={activePet?.name}
+        onOpenTasks={() => onNavigate(AppView.TASKS)}
+      />
+
       {/* INSIGHTS */}
       <PetInsights pet={activePet} />
 
