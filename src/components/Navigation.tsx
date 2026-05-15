@@ -77,10 +77,12 @@ export const Navigation: React.FC<NavigationProps> = ({
   const allNavItems = [
     { view: AppView.HOME, icon: Home, label: 'Home' },
     { view: AppView.PETS, icon: Dog, label: 'Pets' },
+    { view: AppView.TASKS, icon: ListChecks, label: 'Tasks' },
+    { view: AppView.ACHIEVEMENTS, icon: Trophy, label: 'Awards' },
     { view: AppView.HEALTH_RECORDS, icon: FileHeart, label: 'Records' },
-    { view: AppView.REMINDERS, icon: Calendar, label: 'Tasks' },
+    { view: AppView.REMINDERS, icon: Calendar, label: 'Reminders' },
     { view: AppView.NEARBY, icon: MapPin, label: 'Nearby' },
-    { view: AppView.ASSISTANT, icon: MessageCircle, label: 'Chat' },
+    { view: AppView.ASSISTANT, icon: MessageCircle, label: 'Familiar' },
     { view: AppView.COMMUNITY, icon: Users, label: 'Community' },
     { view: AppView.DROPS, icon: Play, label: 'Drops' },
     { view: AppView.GROUPS, icon: Grid, label: 'Groups' },
@@ -92,7 +94,7 @@ export const Navigation: React.FC<NavigationProps> = ({
   const filteredNavItems = allNavItems.filter(item => allowedViews.has(item.view));
 
   // For "both" role, split into two modes
-  const petCareViews = [AppView.HOME, AppView.PETS, AppView.HEALTH_RECORDS, AppView.REMINDERS, AppView.NEARBY, AppView.ASSISTANT];
+  const petCareViews = [AppView.HOME, AppView.PETS, AppView.TASKS, AppView.ACHIEVEMENTS, AppView.HEALTH_RECORDS, AppView.REMINDERS, AppView.NEARBY, AppView.ASSISTANT];
   const communityViews = [AppView.COMMUNITY, AppView.DROPS, AppView.GROUPS, AppView.SCRATCH_BOARD, AppView.PROFILE];
 
   let desktopNavItems: typeof allNavItems;
