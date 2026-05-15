@@ -6,7 +6,7 @@ import type { DailyTask } from '@/hooks/useDailyTasks';
 import { completeTask } from '@/lib/taskEngine';
 import { useToast } from '@/hooks/use-toast';
 
-const CAT_ICON: Record<TaskCategory, React.ComponentType<{ size?: number; className?: string }>> = {
+const CAT_ICON: Record<TaskCategory, React.ElementType> = {
   feeding: UtensilsCrossed,
   walk: Footprints,
   medicine: Pill,
