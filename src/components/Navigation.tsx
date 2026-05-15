@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Home, Dog, Calendar, MessageCircle, LogOut, Users, Play, Grid, User, MapPin, Megaphone, Plus, ClipboardList, UtensilsCrossed, Stethoscope, FileHeart } from 'lucide-react';
+import { Home, Dog, Calendar, MessageCircle, LogOut, Users, Play, Grid, User, MapPin, Megaphone, Plus, ClipboardList, UtensilsCrossed, Stethoscope, FileHeart, ListChecks, Trophy } from 'lucide-react';
 import { AppView } from '../types';
 import { FamiliarLogo } from './ui/FamiliarLogo';
 import type { UserRole } from '@/hooks/useUserRole';
@@ -64,7 +64,7 @@ export const Navigation: React.FC<NavigationProps> = ({
 
   const quickActions = [
     { icon: Plus, label: 'Add Pet', action: () => { onChangeView(AppView.PETS); setShowQuickActions(false); } },
-    { icon: ClipboardList, label: 'Add Task', action: () => { onChangeView(AppView.REMINDERS); setShowQuickActions(false); } },
+    { icon: ClipboardList, label: 'Daily Tasks', action: () => { onChangeView(AppView.TASKS); setShowQuickActions(false); } },
     { icon: UtensilsCrossed, label: 'Log Meal', action: () => { onChangeView(AppView.PETS); setShowQuickActions(false); } },
     { icon: Stethoscope, label: 'Find Vet', action: () => { onChangeView(AppView.NEARBY); setShowQuickActions(false); } },
   ].filter(qa => {
@@ -77,10 +77,12 @@ export const Navigation: React.FC<NavigationProps> = ({
   const allNavItems = [
     { view: AppView.HOME, icon: Home, label: 'Home' },
     { view: AppView.PETS, icon: Dog, label: 'Pets' },
+    { view: AppView.TASKS, icon: ListChecks, label: 'Tasks' },
+    { view: AppView.ACHIEVEMENTS, icon: Trophy, label: 'Awards' },
     { view: AppView.HEALTH_RECORDS, icon: FileHeart, label: 'Records' },
-    { view: AppView.REMINDERS, icon: Calendar, label: 'Tasks' },
+    { view: AppView.REMINDERS, icon: Calendar, label: 'Reminders' },
     { view: AppView.NEARBY, icon: MapPin, label: 'Nearby' },
-    { view: AppView.ASSISTANT, icon: MessageCircle, label: 'Chat' },
+    { view: AppView.ASSISTANT, icon: MessageCircle, label: 'Familiar' },
     { view: AppView.COMMUNITY, icon: Users, label: 'Community' },
     { view: AppView.DROPS, icon: Play, label: 'Drops' },
     { view: AppView.GROUPS, icon: Grid, label: 'Groups' },
@@ -92,7 +94,7 @@ export const Navigation: React.FC<NavigationProps> = ({
   const filteredNavItems = allNavItems.filter(item => allowedViews.has(item.view));
 
   // For "both" role, split into two modes
-  const petCareViews = [AppView.HOME, AppView.PETS, AppView.HEALTH_RECORDS, AppView.REMINDERS, AppView.NEARBY, AppView.ASSISTANT];
+  const petCareViews = [AppView.HOME, AppView.PETS, AppView.TASKS, AppView.ACHIEVEMENTS, AppView.HEALTH_RECORDS, AppView.REMINDERS, AppView.NEARBY, AppView.ASSISTANT];
   const communityViews = [AppView.COMMUNITY, AppView.DROPS, AppView.GROUPS, AppView.SCRATCH_BOARD, AppView.PROFILE];
 
   let desktopNavItems: typeof allNavItems;

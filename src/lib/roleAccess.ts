@@ -2,7 +2,8 @@ import { AppView } from '@/types';
 import type { UserRole } from '@/hooks/useUserRole';
 
 const PET_PARENT_VIEWS = new Set([
-  AppView.HOME, AppView.PETS, AppView.HEALTH_RECORDS, AppView.REMINDERS,
+  AppView.HOME, AppView.PETS, AppView.TASKS, AppView.ACHIEVEMENTS,
+  AppView.HEALTH_RECORDS, AppView.REMINDERS,
   AppView.NEARBY, AppView.ASSISTANT, AppView.PROFILE, AppView.SETTINGS,
 ]);
 
@@ -12,7 +13,8 @@ const VISITOR_VIEWS = new Set([
 ]);
 
 const BOTH_VIEWS = new Set([
-  AppView.HOME, AppView.PETS, AppView.HEALTH_RECORDS, AppView.REMINDERS,
+  AppView.HOME, AppView.PETS, AppView.TASKS, AppView.ACHIEVEMENTS,
+  AppView.HEALTH_RECORDS, AppView.REMINDERS,
   AppView.NEARBY, AppView.ASSISTANT,
   AppView.COMMUNITY, AppView.DROPS, AppView.GROUPS,
   AppView.SCRATCH_BOARD, AppView.PROFILE, AppView.SETTINGS,

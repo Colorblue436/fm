@@ -9,6 +9,7 @@ import { PetInsights } from '@/components/home/PetInsights';
 import { RemindersPanel } from '@/components/home/RemindersPanel';
 import { RecentActivity, ActivityItem } from '@/components/home/RecentActivity';
 import { QuickActionsPanel } from '@/components/home/QuickActionsPanel';
+import { PetGameCard } from '@/components/home/PetGameCard';
 
 interface HomeProps {
   onNavigate: (view: AppView) => void;
@@ -62,12 +63,14 @@ export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
   const [chatMessages, setChatMessages] = useState<ChatMsg[]>([]);
   const [activePetIdx, setActivePetIdx] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [userId, setUserId] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) { setLoading(false); return; }
+      setUserId(user.id);
 
       const [petsRes, remindersRes, recordsRes, chatRes] = await Promise.all([
         supabase.from('pets').select('*').order('created_at', { ascending: false }),
@@ -173,6 +176,15 @@ export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
         onAddReminder={() => onNavigate(AppView.REMINDERS)}
         onSwitchPet={switchPet}
         totalPets={pets.length}
+      />
+
+      {/* GAMIFICATION CARD */}
+      <PetGameCard
+        userId={userId}
+        petId={activePet?.id}
+        petType={activePet?.type}
+        petName={activePet?.name}
+        onOpenTasks={() => onNavigate(AppView.TASKS)}
       />
 
       {/* INSIGHTS */}

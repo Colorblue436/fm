@@ -29,6 +29,8 @@ const Groups = React.lazy(() => import('@/views/Groups').then(m => ({ default: m
 const ScratchBoard = React.lazy(() => import('@/views/ScratchBoard').then(m => ({ default: m.ScratchBoard })));
 const Profile = React.lazy(() => import('@/views/Profile').then(m => ({ default: m.Profile })));
 const Settings = React.lazy(() => import('@/views/Settings').then(m => ({ default: m.Settings })));
+const Tasks = React.lazy(() => import('@/views/Tasks').then(m => ({ default: m.Tasks })));
+const Achievements = React.lazy(() => import('@/views/Achievements').then(m => ({ default: m.Achievements })));
 
 const queryClient = new QueryClient();
 
@@ -133,6 +135,10 @@ const AppContent: React.FC = () => {
         return <Reminders />;
       case AppView.ASSISTANT:
         return <AiAssistant />;
+      case AppView.TASKS:
+        return <Tasks />;
+      case AppView.ACHIEVEMENTS:
+        return <Achievements />;
       case AppView.NEARBY:
         return <NearbyPlaces />;
       case AppView.COMMUNITY:
