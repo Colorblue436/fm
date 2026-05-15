@@ -64,7 +64,7 @@ export const Navigation: React.FC<NavigationProps> = ({
 
   const quickActions = [
     { icon: Plus, label: 'Add Pet', action: () => { onChangeView(AppView.PETS); setShowQuickActions(false); } },
-    { icon: ClipboardList, label: 'Add Task', action: () => { onChangeView(AppView.REMINDERS); setShowQuickActions(false); } },
+    { icon: ClipboardList, label: 'Daily Tasks', action: () => { onChangeView(AppView.TASKS); setShowQuickActions(false); } },
     { icon: UtensilsCrossed, label: 'Log Meal', action: () => { onChangeView(AppView.PETS); setShowQuickActions(false); } },
     { icon: Stethoscope, label: 'Find Vet', action: () => { onChangeView(AppView.NEARBY); setShowQuickActions(false); } },
   ].filter(qa => {
