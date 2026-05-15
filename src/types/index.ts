@@ -5,6 +5,8 @@ export enum AppView {
   HEALTH_RECORDS = 'health_records',
   REMINDERS = 'reminders',
   ASSISTANT = 'assistant',
+  TASKS = 'tasks',
+  ACHIEVEMENTS = 'achievements',
   NEARBY = 'nearby',
   COMMUNITY = 'community',
   DROPS = 'drops',
