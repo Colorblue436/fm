@@ -135,6 +135,10 @@ const AppContent: React.FC = () => {
         return <Reminders />;
       case AppView.ASSISTANT:
         return <AiAssistant />;
+      case AppView.TASKS:
+        return <Tasks />;
+      case AppView.ACHIEVEMENTS:
+        return <Achievements />;
       case AppView.NEARBY:
         return <NearbyPlaces />;
       case AppView.COMMUNITY:
