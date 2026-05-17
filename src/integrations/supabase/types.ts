@@ -567,6 +567,63 @@ export type Database = {
         }
         Relationships: []
       }
+      storage_items: {
+        Row: {
+          ai_summary: string | null
+          ai_tags: string[] | null
+          bucket: string
+          category: string
+          created_at: string
+          description: string | null
+          file_path: string
+          file_size: number | null
+          file_type: string | null
+          file_url: string
+          id: string
+          is_favorite: boolean
+          pet_id: string | null
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          ai_summary?: string | null
+          ai_tags?: string[] | null
+          bucket?: string
+          category?: string
+          created_at?: string
+          description?: string | null
+          file_path: string
+          file_size?: number | null
+          file_type?: string | null
+          file_url: string
+          id?: string
+          is_favorite?: boolean
+          pet_id?: string | null
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          ai_summary?: string | null
+          ai_tags?: string[] | null
+          bucket?: string
+          category?: string
+          created_at?: string
+          description?: string | null
+          file_path?: string
+          file_size?: number | null
+          file_type?: string | null
+          file_url?: string
+          id?: string
+          is_favorite?: boolean
+          pet_id?: string | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       task_completions: {
         Row: {
           completed_at: string
