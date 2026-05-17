@@ -93,8 +93,8 @@ export const Navigation: React.FC<NavigationProps> = ({
   // Filter nav items by role
   const filteredNavItems = allNavItems.filter(item => allowedViews.has(item.view));
 
-  // For "both" role, split into two modes
-  const petCareViews = [AppView.HOME, AppView.PETS, AppView.TASKS, AppView.ACHIEVEMENTS, AppView.HEALTH_RECORDS, AppView.REMINDERS, AppView.NEARBY, AppView.ASSISTANT];
+  // Simplified primary nav: Home, Tasks, Pets, Familiar, Profile
+  const primaryPetViews = [AppView.HOME, AppView.TASKS, AppView.PETS, AppView.ASSISTANT, AppView.PROFILE];
   const communityViews = [AppView.COMMUNITY, AppView.DROPS, AppView.GROUPS, AppView.SCRATCH_BOARD, AppView.PROFILE];
 
   let desktopNavItems: typeof allNavItems;
@@ -105,12 +105,17 @@ export const Navigation: React.FC<NavigationProps> = ({
       desktopNavItems = allNavItems.filter(i => communityViews.includes(i.view));
       mobileNavItems = desktopNavItems.filter(i => i.view !== AppView.PROFILE).slice(0, 4);
     } else {
-      desktopNavItems = allNavItems.filter(i => petCareViews.includes(i.view));
-      mobileNavItems = desktopNavItems.filter(i => i.view !== AppView.HOME).slice(0, 4);
+      desktopNavItems = primaryPetViews.map(v => allNavItems.find(i => i.view === v)!).filter(Boolean);
+      // Mobile center button is Home; show the other 4 around it
+      mobileNavItems = desktopNavItems.filter(i => i.view !== AppView.HOME);
     }
-  } else {
+  } else if (userRole === 'visitor') {
     desktopNavItems = filteredNavItems;
     mobileNavItems = filteredNavItems.filter(i => i.view !== AppView.HOME && i.view !== AppView.PROFILE && i.view !== AppView.SETTINGS).slice(0, 4);
+  } else {
+    // pet_parent (default)
+    desktopNavItems = primaryPetViews.map(v => allNavItems.find(i => i.view === v)!).filter(Boolean);
+    mobileNavItems = desktopNavItems.filter(i => i.view !== AppView.HOME);
   }
 
   const isHomeActive = currentView === AppView.HOME && !isYouMode;
