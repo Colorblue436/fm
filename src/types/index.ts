@@ -6,6 +6,7 @@ export enum AppView {
   REMINDERS = 'reminders',
   ASSISTANT = 'assistant',
   TASKS = 'tasks',
+  STORAGE = 'storage',
   ACHIEVEMENTS = 'achievements',
   NEARBY = 'nearby',
   COMMUNITY = 'community',

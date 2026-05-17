@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Home, Dog, Calendar, MessageCircle, LogOut, Users, Play, Grid, User, MapPin, Megaphone, Plus, ClipboardList, UtensilsCrossed, Stethoscope, FileHeart, ListChecks, Trophy } from 'lucide-react';
+import { Home, Dog, Calendar, MessageCircle, LogOut, Users, Play, Grid, User, MapPin, Megaphone, Plus, ClipboardList, UtensilsCrossed, Stethoscope, FileHeart, ListChecks, Trophy, FolderHeart } from 'lucide-react';
 import { AppView } from '../types';
 import { FamiliarLogo } from './ui/FamiliarLogo';
 import type { UserRole } from '@/hooks/useUserRole';
@@ -77,6 +77,7 @@ export const Navigation: React.FC<NavigationProps> = ({
   const allNavItems = [
     { view: AppView.HOME, icon: Home, label: 'Home' },
     { view: AppView.PETS, icon: Dog, label: 'Pets' },
+    { view: AppView.STORAGE, icon: FolderHeart, label: 'Storage' },
     { view: AppView.TASKS, icon: ListChecks, label: 'Tasks' },
     { view: AppView.ACHIEVEMENTS, icon: Trophy, label: 'Awards' },
     { view: AppView.HEALTH_RECORDS, icon: FileHeart, label: 'Records' },
@@ -93,8 +94,8 @@ export const Navigation: React.FC<NavigationProps> = ({
   // Filter nav items by role
   const filteredNavItems = allNavItems.filter(item => allowedViews.has(item.view));
 
-  // Simplified primary nav: Home, Tasks, Pets, Familiar, Profile
-  const primaryPetViews = [AppView.HOME, AppView.TASKS, AppView.PETS, AppView.ASSISTANT, AppView.PROFILE];
+  // Simplified primary nav: Home, Pets, Storage, Familiar, Profile
+  const primaryPetViews = [AppView.HOME, AppView.PETS, AppView.STORAGE, AppView.ASSISTANT, AppView.PROFILE];
   const communityViews = [AppView.COMMUNITY, AppView.DROPS, AppView.GROUPS, AppView.SCRATCH_BOARD, AppView.PROFILE];
 
   let desktopNavItems: typeof allNavItems;
