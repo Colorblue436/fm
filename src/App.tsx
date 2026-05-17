@@ -31,6 +31,7 @@ const Profile = React.lazy(() => import('@/views/Profile').then(m => ({ default:
 const Settings = React.lazy(() => import('@/views/Settings').then(m => ({ default: m.Settings })));
 const Tasks = React.lazy(() => import('@/views/Tasks').then(m => ({ default: m.Tasks })));
 const Achievements = React.lazy(() => import('@/views/Achievements').then(m => ({ default: m.Achievements })));
+const Storage = React.lazy(() => import('@/views/Storage').then(m => ({ default: m.Storage })));
 
 const queryClient = new QueryClient();
 
@@ -137,6 +138,8 @@ const AppContent: React.FC = () => {
         return <AiAssistant />;
       case AppView.TASKS:
         return <Tasks />;
+      case AppView.STORAGE:
+        return <Storage />;
       case AppView.ACHIEVEMENTS:
         return <Achievements />;
       case AppView.NEARBY:
