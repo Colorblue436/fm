@@ -34,7 +34,7 @@ export const Layout: React.FC<LayoutProps> = ({
       />
       
       <main className="flex-1 md:ml-56 w-full min-h-screen overflow-y-auto pb-24 md:pb-6 p-4 md:px-8 md:py-6">
-        <div className="max-w-5xl mx-auto">
+        <div className="max-w-[1400px] mx-auto">
           {children}
         </div>
       </main>
