@@ -13,22 +13,17 @@ interface Props {
   level: number;
   xpInLevel: number;
   xpToNext: number;
-  weekProgress?: boolean[]; // 7 days, M-S
   onEditName?: () => void;
   onChangeMood?: () => void;
 }
 
-const DAYS = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
-
 export const HeroPetCard: React.FC<Props> = ({
   name, type, avatarUrl, mood, streak, bestStreak, level,
-  xpInLevel, xpToNext, weekProgress, onEditName, onChangeMood,
+  xpInLevel, xpToNext, onEditName, onChangeMood,
 }) => {
   const meta = MOOD_META[mood];
   const Fallback = type?.toLowerCase() === 'cat' ? Cat : Dog;
   const pct = Math.min(100, Math.round((xpInLevel / xpToNext) * 100));
-  const week = weekProgress ?? Array(7).fill(false).map((_, i) => i < (streak % 7));
-  const todayIdx = (new Date().getDay() + 6) % 7;
 
   return (
     <motion.section
@@ -67,31 +62,17 @@ export const HeroPetCard: React.FC<Props> = ({
         <div className="text-[11px] font-bold text-foreground leading-none">Lv. {level}</div>
       </div>
 
-      {/* Streak card — desktop only */}
+      {/* Streak badge — desktop only, compact */}
       <motion.div
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ delay: 0.3 }}
-        className="hidden sm:block absolute top-5 right-5 z-10 rounded-2xl px-4 py-3 text-white shadow-xl shadow-familiar-700/30"
+        className="hidden sm:flex absolute top-5 right-5 z-10 items-center gap-1.5 rounded-2xl px-4 py-2.5 text-white shadow-xl shadow-familiar-700/30"
         style={{ background: 'linear-gradient(160deg, hsl(var(--familiar-500)), hsl(var(--familiar-700)))' }}
       >
-        <div className="flex items-center gap-1.5">
-          <Flame size={16} className="text-orange-300 animate-bounce-soft" />
-          <span className="text-2xl font-extrabold tabular-nums leading-none">{streak}</span>
-        </div>
-        <div className="text-[10px] font-medium opacity-90 mt-0.5">day streak</div>
-        <div className="flex gap-[3px] mt-2">
-          {DAYS.map((d, i) => (
-            <div key={i} className="flex flex-col items-center gap-1">
-              <span className="text-[9px] opacity-70 font-semibold">{d}</span>
-              <div className={`w-3.5 h-3.5 rounded-full flex items-center justify-center text-[8px] font-bold transition
-                ${week[i] ? 'bg-white text-familiar-700' : i === todayIdx ? 'bg-white/30 ring-1 ring-white/60' : 'bg-white/20'}`}>
-                {week[i] ? '✓' : i === todayIdx ? '•' : ''}
-              </div>
-            </div>
-          ))}
-        </div>
-        <div className="text-[10px] opacity-80 mt-2 font-medium">Best streak: {bestStreak}</div>
+        <Flame size={16} className="text-orange-300 animate-bounce-soft" />
+        <span className="text-xl font-extrabold tabular-nums leading-none">{streak}</span>
+        <span className="text-[10px] font-medium opacity-90">day streak</span>
       </motion.div>
 
       {/* Main content row */}
@@ -150,20 +131,9 @@ export const HeroPetCard: React.FC<Props> = ({
             <ChevronDown size={14} className="text-muted-foreground" />
           </button>
 
-          {/* Mobile-only streak mini + weekly dots */}
-          <div className="sm:hidden mt-4 flex items-center justify-center gap-3">
-            <div className="flex gap-[3px]">
-              {DAYS.map((d, i) => (
-                <div key={i} className="flex flex-col items-center gap-0.5">
-                  <span className="text-[8px] opacity-60 font-semibold">{d}</span>
-                  <div className={`w-3 h-3 rounded-full flex items-center justify-center text-[7px] font-bold transition
-                    ${week[i] ? 'bg-familiar-500 text-white' : i === todayIdx ? 'bg-familiar-200 ring-1 ring-familiar-400' : 'bg-muted'}`}>
-                    {week[i] ? '✓' : ''}
-                  </div>
-                </div>
-              ))}
-            </div>
-            <span className="text-[10px] text-muted-foreground font-medium">Best: {bestStreak}</span>
+          {/* Mobile-only best streak */}
+          <div className="sm:hidden mt-3 text-[11px] text-muted-foreground font-medium">
+            Best streak: {bestStreak} days
           </div>
         </div>
       </div>
