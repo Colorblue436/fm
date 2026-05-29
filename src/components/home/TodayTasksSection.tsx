@@ -17,11 +17,15 @@ export const TodayTasksSection: React.FC<Props> = ({ tasks, onComplete, onViewAl
   const remaining = tasks.filter(t => !t.completed);
   const visible = (remaining.length ? remaining : tasks).slice(0, 3);
 
-  // Progress ring math
-  const size = 56;
-  const stroke = 6;
+  // Progress ring math — smaller on mobile
+  const size = 48;
+  const smSize = 56;
+  const stroke = 5;
+  const smStroke = 6;
   const r = (size - stroke) / 2;
+  const smR = (smSize - smStroke) / 2;
   const c = 2 * Math.PI * r;
+  const smC = 2 * Math.PI * smR;
 
   return (
     <motion.section

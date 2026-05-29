@@ -24,7 +24,7 @@ export const TopGreeting: React.FC<Props> = ({ name, avatarUrl, xp, coins, onPro
       initial={{ opacity: 0, y: -8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
-      className="flex items-center justify-between gap-4 mb-6"
+      className="flex items-center justify-between gap-4 mb-4 sm:mb-6"
     >
       <div>
         <h1 className="text-2xl md:text-[28px] font-bold tracking-tight text-foreground leading-tight">
