@@ -138,9 +138,9 @@ export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
         onProfile={() => onNavigate(AppView.PROFILE)}
       />
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 sm:gap-5">
         {/* MAIN COLUMN */}
-        <div className="lg:col-span-8 space-y-5">
+        <div className="lg:col-span-8 space-y-3 sm:space-y-5">
           <HeroPetCard
             name={activePet.name}
             type={activePet.type}
@@ -176,7 +176,7 @@ export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
         </div>
 
         {/* RIGHT COLUMN */}
-        <div className="lg:col-span-4 space-y-5">
+        <div className="lg:col-span-4 space-y-3 sm:space-y-5">
           <ProgressPanel
             level={level}
             xpInLevel={xpInLevel}

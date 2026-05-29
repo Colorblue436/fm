@@ -49,7 +49,7 @@ export const ProgressPanel: React.FC<Props> = ({
         />
       </div>
 
-      <div className="grid grid-cols-3 gap-2 mt-5">
+      <div className="grid grid-cols-3 gap-1.5 sm:gap-2 mt-5">
         <Stat icon={Star} tone="text-rose-500" bg="bg-rose-50" label="Tasks done" value={String(tasksDone)} />
         <Stat icon={Flame} tone="text-orange-500" bg="bg-orange-50" label="Streak" value={`${streak} ${streak === 1 ? 'day' : 'days'}`} />
         <Stat icon={ShieldCheck} tone="text-emerald-500" bg="bg-emerald-50" label="Health score" value={`${healthScore}%`} />

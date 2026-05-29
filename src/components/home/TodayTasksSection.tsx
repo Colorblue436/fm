@@ -18,8 +18,8 @@ export const TodayTasksSection: React.FC<Props> = ({ tasks, onComplete, onViewAl
   const visible = (remaining.length ? remaining : tasks).slice(0, 3);
 
   // Progress ring math
-  const size = 56;
-  const stroke = 6;
+  const size = 48;
+  const stroke = 5;
   const r = (size - stroke) / 2;
   const c = 2 * Math.PI * r;
 

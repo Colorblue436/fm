@@ -35,7 +35,7 @@ export const HeroPetCard: React.FC<Props> = ({
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: 'easeOut' }}
-      className="relative rounded-[28px] overflow-hidden p-5 sm:p-7 min-h-[280px] shadow-lg shadow-familiar-500/5 border border-white/40"
+      className="relative rounded-[24px] sm:rounded-[28px] overflow-hidden p-4 sm:p-6 md:p-7 min-h-[200px] sm:min-h-[260px] md:min-h-[280px] shadow-lg shadow-familiar-500/5 border border-white/40"
       style={{
         background: `
           radial-gradient(120% 90% at 80% 10%, hsl(var(--familiar-200) / 0.55), transparent 55%),
@@ -49,17 +49,30 @@ export const HeroPetCard: React.FC<Props> = ({
         style={{ backgroundImage: 'radial-gradient(circle at 20% 30%, rgba(255,255,255,0.6) 1px, transparent 1.5px), radial-gradient(circle at 75% 60%, rgba(255,255,255,0.5) 1px, transparent 1.5px), radial-gradient(circle at 50% 85%, rgba(255,255,255,0.4) 1px, transparent 1.5px)',
           backgroundSize: '180px 180px, 240px 240px, 200px 200px' }} />
 
-      {/* Level chip */}
-      <div className="absolute top-5 left-5 z-10 px-3 py-1.5 rounded-2xl bg-white/80 backdrop-blur-md border border-white/60 shadow-sm">
+      {/* Mobile header row: level + streak */}
+      <div className="sm:hidden flex items-center justify-between mb-3 relative z-10">
+        <div className="px-2.5 py-1.5 rounded-2xl bg-white/80 backdrop-blur-md border border-white/60 shadow-sm">
+          <span className="text-[11px] font-bold text-foreground">Lv. {level}</span>
+        </div>
+        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-2xl text-white shadow-md"
+          style={{ background: 'linear-gradient(160deg, hsl(var(--familiar-500)), hsl(var(--familiar-700)))' }}>
+          <Flame size={14} className="text-orange-300" />
+          <span className="text-sm font-extrabold tabular-nums">{streak}</span>
+          <span className="text-[10px] opacity-90 font-medium">day</span>
+        </div>
+      </div>
+
+      {/* Level chip — desktop only */}
+      <div className="hidden sm:block absolute top-5 left-5 z-10 px-3 py-1.5 rounded-2xl bg-white/80 backdrop-blur-md border border-white/60 shadow-sm">
         <div className="text-[11px] font-bold text-foreground leading-none">Lv. {level}</div>
       </div>
 
-      {/* Streak card (top-right) */}
+      {/* Streak card — desktop only */}
       <motion.div
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ delay: 0.3 }}
-        className="absolute top-5 right-5 z-10 rounded-2xl px-4 py-3 text-white shadow-xl shadow-familiar-700/30"
+        className="hidden sm:block absolute top-5 right-5 z-10 rounded-2xl px-4 py-3 text-white shadow-xl shadow-familiar-700/30"
         style={{ background: 'linear-gradient(160deg, hsl(var(--familiar-500)), hsl(var(--familiar-700)))' }}
       >
         <div className="flex items-center gap-1.5">
@@ -82,8 +95,8 @@ export const HeroPetCard: React.FC<Props> = ({
       </motion.div>
 
       {/* Main content row */}
-      <div className="relative z-[1] flex flex-col sm:flex-row items-center gap-5 sm:gap-6 pt-12 sm:pt-6">
-        {/* XP column (left) */}
+      <div className="relative z-[1] flex flex-col sm:flex-row items-center gap-4 sm:gap-6 pt-2 sm:pt-6">
+        {/* XP column (left) — desktop only */}
         <div className="hidden sm:flex flex-col items-start pt-2 w-20 shrink-0">
           <div className="text-[10px] font-bold tracking-wider text-muted-foreground/80 uppercase mt-12">
             {xpInLevel} / {xpToNext} XP
@@ -97,11 +110,11 @@ export const HeroPetCard: React.FC<Props> = ({
         </div>
 
         {/* Avatar */}
-        <div className="relative mx-auto sm:mx-0 w-44 h-44 sm:w-52 sm:h-52 shrink-0">
+        <div className="relative mx-auto sm:mx-0 w-28 h-28 sm:w-40 sm:h-40 md:w-52 md:h-52 shrink-0">
           <motion.div
             animate={{ y: [0, -10, 0] }}
             transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut' }}
-            className="absolute inset-0 rounded-full overflow-hidden shadow-2xl shadow-familiar-700/20 ring-[6px] ring-white/70"
+            className="absolute inset-0 rounded-full overflow-hidden shadow-2xl shadow-familiar-700/20 ring-[4px] sm:ring-[6px] ring-white/70"
             style={{
               background: `radial-gradient(circle at 30% 30%, hsl(var(--familiar-200)), hsl(var(--familiar-300) / 0.6))`,
             }}
@@ -110,7 +123,7 @@ export const HeroPetCard: React.FC<Props> = ({
               <img src={avatarUrl} alt={name} className="w-full h-full object-cover" />
             ) : (
               <div className="w-full h-full flex items-center justify-center">
-                <Fallback size={88} className="text-familiar-700/40" strokeWidth={1.5} />
+                <Fallback size={64} className="text-familiar-700/40 sm:w-[88px] sm:h-[88px]" strokeWidth={1.5} />
               </div>
             )}
           </motion.div>
@@ -122,25 +135,41 @@ export const HeroPetCard: React.FC<Props> = ({
             onClick={onEditName}
             className="inline-flex items-center gap-2 group"
           >
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-foreground tracking-tight">{name}</h2>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-foreground tracking-tight">{name}</h2>
             <Pencil size={14} className="text-muted-foreground opacity-0 group-hover:opacity-100 transition" />
           </button>
-          <p className="text-base text-muted-foreground mt-1.5">
+          <p className="text-sm sm:text-base text-muted-foreground mt-1">
             Feeling <span className="font-semibold text-foreground">{meta.label.toLowerCase()}</span> today
           </p>
           <button
             onClick={onChangeMood}
-            className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 backdrop-blur border border-white/70 shadow-sm hover:bg-white transition"
+            className="mt-3 sm:mt-4 inline-flex items-center gap-2 px-3.5 sm:px-4 py-2 rounded-full bg-white/80 backdrop-blur border border-white/70 shadow-sm hover:bg-white transition"
           >
             <span className="text-lg leading-none">{meta.emoji}</span>
             <span className="text-sm font-semibold text-foreground">{meta.label}</span>
             <ChevronDown size={14} className="text-muted-foreground" />
           </button>
+
+          {/* Mobile-only streak mini + weekly dots */}
+          <div className="sm:hidden mt-4 flex items-center justify-center gap-3">
+            <div className="flex gap-[3px]">
+              {DAYS.map((d, i) => (
+                <div key={i} className="flex flex-col items-center gap-0.5">
+                  <span className="text-[8px] opacity-60 font-semibold">{d}</span>
+                  <div className={`w-3 h-3 rounded-full flex items-center justify-center text-[7px] font-bold transition
+                    ${week[i] ? 'bg-familiar-500 text-white' : i === todayIdx ? 'bg-familiar-200 ring-1 ring-familiar-400' : 'bg-muted'}`}>
+                    {week[i] ? '✓' : ''}
+                  </div>
+                </div>
+              ))}
+            </div>
+            <span className="text-[10px] text-muted-foreground font-medium">Best: {bestStreak}</span>
+          </div>
         </div>
       </div>
 
       {/* XP bar mobile */}
-      <div className="sm:hidden mt-5">
+      <div className="sm:hidden mt-4">
         <div className="flex justify-between text-[11px] font-bold text-muted-foreground/80 uppercase tracking-wider">
           <span>Lv. {level}</span><span>{xpInLevel} / {xpToNext} XP</span>
         </div>
